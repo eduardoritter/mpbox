@@ -10,11 +10,11 @@ db = SQLAlchemy()
 
 def create_app():
     """Create and configure an instance of the Flask application."""
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__)
 
     app.config.from_mapping(        
         SECRET_KEY="secret",        
-        SQLALCHEMY_DATABASE_URI="sqlite:///mpbox/mpbox.sqlite",
+        SQLALCHEMY_DATABASE_URI="sqlite:///mpbox.sqlite",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 

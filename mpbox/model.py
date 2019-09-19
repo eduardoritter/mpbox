@@ -8,3 +8,5 @@ class Patient(db.Model):
     name = Column(Text, nullable=False)
     cpf = Column(String, nullable=False)
     email = Column(String)
+    note = Column(Text)
+    created = Column(DateTime, default=datetime.utcnow)
