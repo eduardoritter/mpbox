@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}Paciente{% endblock %}
+
+{% block body %}
+<div class="row">
+  <div class="offset-sm-2 col-sm-8">
+
+    <div class="input-group">
+      <div class="input-group-prepend">
+
+        <span class="input-group-text" id="basic-addon2">{{patient.name}}</span>
+      </div>
+      <div class="input-group-append">
+        <a href="{{ url_for('patient.create_plan', id=patient['id']) }}" title="Novo">
+          <button class="btn btn-outline-secondary">Novo Plano</button>
+        </a>
+      </div>
+    </div>
+
+    <ul class="edit">
+      <div class="table-responsive-sm">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Plano</th>
+              <th scope="col">Ativo</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for p in plans %}
+            <tr>
+              <td><a href="/plan/{{ p.id }}" title="Id">{{ p.id }}</a> </td>
+              <td><a href="/plan/{{ p.id }}" title="Plan Type">{{ p.plan_type }}</a></td>
+              <td><a href="/plan/{{ p.id }}" title="Plan Type">{{ p.active }}</a></td>
+              <td>
+                <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
+                  <button class="btn btn-outline-secondary">Editar</button>
+                </a>
+              </td>
+              <td>
+                <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
+                  <button class="btn btn-outline-secondary" type="submit" value="Delete"
+                    onclick="return confirm('Confirmar consulta?');">Consulta</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

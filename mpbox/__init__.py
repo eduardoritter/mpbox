@@ -1,4 +1,5 @@
 import os
+import logging
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -38,6 +39,6 @@ def create_app():
     # in another app, you might define a separate main index here with
     # app.route, while giving the blog blueprint a url_prefix, but for
     # the tutorial the blog will be the main index
-    app.add_url_rule("/", endpoint="index")
+    app.add_url_rule("/", endpoint="patient.index")
 
     return app
