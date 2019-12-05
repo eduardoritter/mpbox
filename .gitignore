@@ -58,3 +58,4 @@ instance/
 # tests environment
 *.sqlite
 migrations/
+.vscode/launch.json

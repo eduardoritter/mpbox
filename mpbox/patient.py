@@ -4,7 +4,7 @@ from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanF
 
 from mpbox import db
 from mpbox.model import Patient, Plan
-from mpbox.plan import PlanForm, isActivePlan, populatePlan
+from mpbox.plan import PlanForm, isActivePlan
 
 
 bp = Blueprint("patient", __name__, url_prefix="/patient")
@@ -89,14 +89,20 @@ def create_plan(id):
             return render_template("plan.html",
                                    patient=patient, plans=plans, form=planForm)
    
-    plan = populatePlan(plan, request, patient)                                
+    if planForm.validate_on_submit():
+        plan = Plan()
+        planForm.populate_obj(plan)
+        plan.patient=patient                               
     
-    db.session.add(plan)
-    db.session.commit()
+        db.session.add(plan)
+        db.session.commit()
 
-    flash('Record was successfully added')
-
-    return redirect(url_for(".index"))
+        flash('Record was successfully added')
+        return redirect(url_for(".index"))
+    
+    flash('Cannot update Plan')
+    return render_template("plan.html", 
+                            patient=patient, plans=plans, form=planForm)
 
 
 class PatientForm(FlaskForm):

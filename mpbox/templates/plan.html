@@ -23,20 +23,54 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        {{ form.value.label }} 
+                        {{ form.value.label }}
                         {{ form.value(class_="form-control") }}
                     </div>
                     <div class="form-group col-md-6">
-                        {{ form.receipt.label }} 
+                        {{ form.receipt.label }}
                         {{ form.receipt(class_="form-control") }}
                     </div>
                 </div>
                 <div class="form-group">
-                    {{ form.note.label }} 
+                    {{ form.note.label }}
                     {{ form.note(class_="form-control") }}
                 </div>
+                {% if not readonly %}
                 <button class="btn btn-primary submit-btn" type="submit">Update</button>
+                {% endif %}
             </form>
+
+            {% if readonly %}
+            <ul class="edit">
+                <div class="table-responsive-sm">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Data</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for c in visits %}
+                            <tr>
+                                <td><a href="/visit/{{ c.id }}" title="Id">{{ c.id }}</a> </td>
+                                <td><a href="/visit/{{ c.id }}" title="Data">{{ c.created.date()|to_date }}</a></td>
+                                <td>
+                                    <form action="{{ url_for('visit.delete', id=c['id']) }}" method="post">
+                                        <button class="btn btn-outline-secondary" type="submit" value="Delete"
+                                            onclick="return confirm('Excluir consulta?');">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </ul>
+
+            {% endif %}
         </div>
     </div>
 </div>

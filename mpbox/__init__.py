@@ -4,6 +4,7 @@ import logging
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_babel import Babel
 
 
 db = SQLAlchemy()
@@ -12,13 +13,16 @@ db = SQLAlchemy()
 def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
+    
+    babel = Babel(app)
 
     app.config.from_mapping(        
         SECRET_KEY="secret",        
         SQLALCHEMY_DATABASE_URI="sqlite:///mpbox.sqlite",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        BABEL_DEFAULT_LOCALE="pt_BR",
+        BABEL_DEFAULT_TIMEZONE="Brasilia"
     )
-
 
     @app.route("/hi")
     def hello():
@@ -27,14 +31,16 @@ def create_app():
     db.init_app(app)
     Migrate(app, db)
 
-    from mpbox import patient
-   
+    from mpbox import patient   
     app.register_blueprint(patient.bp)
 
     from mpbox import plan
-
     app.register_blueprint(plan.bp)
 
+    from mpbox import visit
+    app.register_blueprint(visit.bp)
+
+    
     # make url_for('index') == url_for('patient.index')
     # in another app, you might define a separate main index here with
     # app.route, while giving the blog blueprint a url_prefix, but for

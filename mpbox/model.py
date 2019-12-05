@@ -17,18 +17,13 @@ class PaymentType(enum.Enum):
 
     @classmethod
     def choices(cls):
-        return [(choice, choice.value) for choice in cls]
-
-    @classmethod
-    def coerce(cls, item):
-        return cls(int(item)) if not isinstance(item, cls) else item.value
+        return [(choice.name, choice.value) for choice in cls]
 
     def __str__(self):
         return str(self.name)
 
     def __html__(self):
         return self.value
-
 
 class PlanType(enum.Enum):
     IN = "Individual"
@@ -37,18 +32,13 @@ class PlanType(enum.Enum):
 
     @classmethod
     def choices(cls):
-        return [(choice, choice.value) for choice in cls]
-
-    @classmethod
-    def coerce(cls, item):
-        return cls(int(item)) if not isinstance(item, cls) else item.value
-
+        return [(choice.name, choice.value) for choice in cls]
+    
     def __str__(self):
         return str(self.name)
-
+    
     def __html__(self):
         return self.value
-
 
 class Patient(db.Model):
     __tablename__ = 'patient'
