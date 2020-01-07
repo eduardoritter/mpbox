@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
 from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, validators
+from flask_login import login_required, current_user
 
 from mpbox import db
 from mpbox.model import Patient, Plan
@@ -21,8 +22,8 @@ def search():
     print(patients) 
     return render_template("index.html", patients=patients)
 
-
 @bp.route("/create", methods=("GET", "POST"))
+@login_required
 def create():
     form = PatientForm()
 

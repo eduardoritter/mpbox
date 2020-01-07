@@ -52,12 +52,17 @@
                         </thead>
 
                         <tbody>
-                            {% for c in visits %}
+                            {% for v in visits %}
                             <tr>
-                                <td><a href="/visit/{{ c.id }}" title="Id">{{ c.id }}</a> </td>
-                                <td><a href="/visit/{{ c.id }}" title="Data">{{ c.created.date()|to_date }}</a></td>
+                                <td><a href="/visit/{{ v.id }}" title="Id">{{ v.id }}</a> </td>
+                                <td><a href="/visit/{{ v.id }}" title="Data">{{ v.created.date()|to_date }}</a></td>
                                 <td>
-                                    <form action="{{ url_for('visit.delete', id=c['id']) }}" method="post">
+                                    <a href="{{ url_for('visit.update', id=v['id']) }}" title="{{ v.name }}">
+                                        <button class="btn btn-outline-secondary">Editar</button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('visit.delete', id=v['id']) }}" method="post">
                                         <button class="btn btn-outline-secondary" type="submit" value="Delete"
                                             onclick="return confirm('Excluir consulta?');">Excluir</button>
                                     </form>
