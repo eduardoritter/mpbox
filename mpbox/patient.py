@@ -15,12 +15,14 @@ bp = Blueprint("patient", __name__, url_prefix="/patient")
 def index():
     return render_template("index.html")
 
+
 @bp.route("/search")
 def search():
     name = request.args.get('name')    
     patients = Patient.query.filter(Patient.name.like('%' + str(name) + '%')).all()
     print(patients) 
     return render_template("index.html", patients=patients)
+
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
