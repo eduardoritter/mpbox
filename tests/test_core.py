@@ -1,5 +1,4 @@
 from mpbox import app
-
 # Importamos a biblioteca de testes
 import unittest
 

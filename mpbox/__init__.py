@@ -20,10 +20,6 @@ app.config.from_mapping(
     BABEL_DEFAULT_TIMEZONE="Brasilia"
 )
 
-@app.route("/hi")
-def hello():
-    return "Hi, I'm up!"
-
 db.init_app(app)
 Migrate(app, db)
 
@@ -47,3 +43,7 @@ app.register_blueprint(auth.bp)
 # app.route, while giving the blog blueprint a url_prefix, but for
 # the tutorial the blog will be the main index
 app.add_url_rule("/", endpoint="patient.index")
+
+@app.route("/hi")
+def hello():
+    return "Hi, I'm up!"
