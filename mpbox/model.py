@@ -1,7 +1,7 @@
 import enum
 
 from datetime import datetime
-from sqlalchemy import Integer, String, DateTime, Column, Text, Numeric, Text, ForeignKey, Boolean, Enum
+from sqlalchemy import Integer, String, DateTime, Column, Text, Numeric, Text, ForeignKey, Boolean, Enum, Date, Time
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
 from flask_login import UserMixin
@@ -50,6 +50,7 @@ class Patient(db.Model):
     name = Column(Text, nullable=False)
     cpf = Column(String, nullable=False)
     email = Column(String)
+    birthdate = Column(Date)
     plans = relationship("Plan", backref='patient')
     inactive = Column(Boolean, default=False)
     note = Column(Text)
@@ -74,6 +75,8 @@ class Visit(db.Model):
     __tablename__ = 'visit'
     id = Column(Integer, primary_key=True)
     plan_id = Column(Integer, ForeignKey('plan.id'))
+    date = Column(Date)
+    time = Column(Time)
     created = Column(DateTime, default=datetime.utcnow)
 
 
@@ -88,3 +91,11 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return pbkdf2_sha256.verify(password, self.password)
+
+class Log(db.Model):
+    __tablename__ = 'log'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    table = Column(String)
+    detail = Column(String)
+    created = Column(DateTime, default=datetime.utcnow)

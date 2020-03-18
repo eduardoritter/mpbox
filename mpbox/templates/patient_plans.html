@@ -16,81 +16,78 @@
   </a>
 </nav>
 
-<ul class="edit">
-  <div class="table-responsive-sm">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Plano</th>
-        </tr>
-      </thead>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" style="width:40%">Plano Ativo</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
 
-      <tbody>
-        {% for p in activePlans %}
-        <tr>
-          <td>{{ p.id }}</td>
-          <td>{{ p.plan_type }}</td>
-          <td>            
-            <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
-              <button class="btn btn-outline-secondary">Editar</button>
-            </a>
-          </td>
-          
-          <td>            
-            <a href="{{ url_for('plan.display', id=p['id']) }}" title="{{ p.name }}">
-              <button class="btn btn-outline-secondary">Detalhar</button>
-            </a>
-          </td>
-          <td>
-            <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
-              <button class="btn btn-outline-secondary" type="submit" value="Delete"
-                onclick="return confirm('Confirmar consulta?');">Consulta</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</ul>
+    <tbody>
+      {% for p in activePlans %}
+      <tr>
+        <th scope="row">{{ p.id }}</th>
+        <td>{{ p.plan_type }}</td>
+        <td>
+          <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
+            <button class="btn btn-outline-secondary">Editar</button>
+          </a>
+        </td>
+        <td>
+          <a href="{{ url_for('plan.display', id=p['id']) }}" title="{{ p.name }}">
+            <button class="btn btn-outline-secondary">Detalhar</button>
+          </a>
+        </td>
+        <td>
+          <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
+            <button class="btn btn-outline-secondary" type="submit" value="Delete"
+              onclick="return confirm('Confirmar consulta?');">Consulta</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<ul class="edit">
-  <div class="table-responsive-sm">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Plano</th>
-        </tr>
-      </thead>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" style="width:40%">Plano</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
 
-      <tbody>
-        {% for p in oldPlans %}
-        <tr>
-          <td>{{ p.id }}</td>
-          <td>{{ p.plan_type }}</td>
-          <td>            
-            <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
-              <button class="btn btn-outline-secondary">Editar</button>
-            </a>
-          </td>
-          
-          <td>            
-            <a href="{{ url_for('plan.display', id=p['id']) }}" title="{{ p.name }}">
-              <button class="btn btn-outline-secondary">Detalhar</button>
-            </a>
-          </td>
-          <td>
-            <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
-              <button class="btn btn-outline-secondary" type="submit" value="Delete"
-                onclick="return confirm('Confirmar consulta?');">Consulta</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</ul>
+    <tbody>
+      {% for p in oldPlans %}
+      <tr>
+        <th scope="row">{{ p.id }}</th>
+        <td>{{ p.plan_type }}</td>
+        <td>
+          <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
+            <button class="btn btn-outline-secondary">Editar</button>
+          </a>
+        </td>
+        <td>
+          <a href="{{ url_for('plan.display', id=p['id']) }}" title="{{ p.name }}">
+            <button class="btn btn-outline-secondary">Detalhar</button>
+          </a>
+        </td>
+        <td>
+          <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
+            <button class="btn btn-outline-secondary" type="submit" value="Delete"
+              onclick="return confirm('Confirmar consulta?');">Consulta</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

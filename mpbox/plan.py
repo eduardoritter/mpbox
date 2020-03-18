@@ -53,7 +53,7 @@ def update(id):
         db.session.commit()
 
         flash('Record was successfully updated')
-        return redirect(url_for("patient.index"))
+        return redirect(url_for("patient.plans", id=plan.patient_id))
 
     flash('Cannot update Plan')
     return render_template("plan.html", form=planForm)
