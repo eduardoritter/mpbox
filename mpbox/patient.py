@@ -20,7 +20,7 @@ def index():
 def search():
     name = request.args.get('name')    
     patients = Patient.query.filter(Patient.name.like('%' + str(name) + '%')).all()
-    print(patients) 
+
     return render_template("index.html", patients=patients)
 
 
@@ -71,10 +71,16 @@ def plans(id):
     patient = Patient.query.get(id)
     plans = patient.plans
 
-    for p in plans:
-        print(p.plan_type)
+    activePlans = []
+    oldPlans =[]
 
-    return render_template("patient_plans.html", patient=patient, plans=plans)
+    for p in plans:
+        if isActivePlan(p):
+            activePlans.append(p)
+        else:
+            oldPlans.append(p)
+
+    return render_template("patient_plans.html", patient=patient, activePlans=activePlans, oldPlans=oldPlans)
 
 
 @bp.route("/<int:id>/create_plan", methods=("GET", "POST"))

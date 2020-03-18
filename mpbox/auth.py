@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user
 
+from mpbox import db, login_manager
 from mpbox.model import User
 
 
@@ -20,7 +21,7 @@ def signup():
 @bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('mp.index'))
+    return redirect(url_for('auth.login'))
 
 
 @bp.route('/login', methods=['POST'])
@@ -37,3 +38,24 @@ def login_post():
 
     flash('Please check your login details and try again.')
     return redirect(url_for('auth.login'))
+
+
+@bp.route('/create_user')
+def create_user():
+
+    user = User()
+
+    user.username = 'ad'
+    user.password = '123'
+    user.gen_hash()
+
+    db.session.add(user)
+    db.session.commit()
+
+    flash('User created.')
+    return redirect(url_for('auth.login'))
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)

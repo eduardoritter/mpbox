@@ -3,51 +3,51 @@
 {% block title %}Paciente{% endblock %}
 
 {% block body %}
-<div class="row">
-  <div class="offset-sm-2 col-sm-8">
-    <div class="input-group">
-      <form class="form-inline my-2 my-lg-0" action="{{ url_for('patient.search')}}" method="get">
-        <input class="form-control mr-md-2" name="name" id="name" type="search" placeholder="Pesquisar paciente" aria-label="Search">
-        <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Pesquisar</button>
-      </form>
-      <a href="{{ url_for('patient.create') }}" title="Novo">
-        <button class="btn btn-outline-secondary">Novo</button>
+
+<nav class="navbar navbar-light bg-light">
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item active">
+      <a href="{{ url_for('patient.create') }}" title="Novo Paciente">
+        <button class="btn btn-outline-secondary">Novo Paciente</button>
       </a>
-    </div>
-  </div>
-</div>
-<div class="row">
-  {% if patients %}
-  <div class="offset-sm-2 col-sm-8">
-    <h2 class="your-posts">Pacientes</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">id</th>
-          <th scope="col">Nome</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for p in patients %}
-        <tr>
-          <th scope="row"><a href="{{ url_for('patient.update', id=p['id']) }}" title="{{ p.id }}">{{ p.id }}</a></th>
-          <td><a href="{{ url_for('patient.update', id=p['id']) }}" title="{{ p.name }}">{{ p.name }}</a></td>
-          <td>
-            <a href="{{ url_for('patient.update', id=p['id']) }}" title="{{ p.name }}">
-              <button class="btn btn-outline-secondary">Editar</button>
-            </a>
-          </td>
-          <td><a href="{{ url_for('patient.plans', id=p['id']) }}" title="{{ p.name }}">
-              <button class="btn btn-outline-secondary">Planos</button>
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-</div>
+    </li>
+  </ul>
+  <form class="form-inline" action="{{ url_for('patient.search')}}" method="get">
+    <input class="form-control mr-sm-2" name="name" id="name" type="search" placeholder="Pesquisar paciente" aria-label="Search">
+    <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Pesquisar</button>
+  </form>
+</nav>
+
+{% if patients %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nome</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in patients %}
+    <tr>
+      <th scope="row">{{ p.id }}</th>
+      <td>{{ p.name }}</td>
+      <td>
+        <a href="{{ url_for('patient.update', id=p['id']) }}" title="{{ p.name }}">
+          <button class="btn btn-outline-secondary">Editar</button>
+        </a>
+      </td>
+      <td><a href="{{ url_for('patient.plans', id=p['id']) }}" title="{{ p.name }}">
+          <button class="btn btn-outline-secondary">Planos</button>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
 {% endblock %}

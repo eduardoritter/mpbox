@@ -9,8 +9,8 @@ from flask_babel import Babel
 
 app = Flask(__name__)
 db = SQLAlchemy()
-login_manager = LoginManager()
-babel = Babel(app)
+
+#babel = Babel(app)
 
 app.config.from_mapping(
     SECRET_KEY="secret",
@@ -23,6 +23,7 @@ app.config.from_mapping(
 db.init_app(app)
 Migrate(app, db)
 
+login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 

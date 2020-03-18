@@ -11,7 +11,8 @@ from mpbox import db
 class PaymentType(enum.Enum):
     DI = "Dinheiro"
     DB = "Debito"
-    CA = "Credito Avista"
+    DP = "Deposito"
+    CA = "Credito A vista"
     C2 = "Credito 2 Parcelas"
     C3 = "Credito 3 Parcelas"
     C4 = "Credito 4 Parcelas"
@@ -28,9 +29,10 @@ class PaymentType(enum.Enum):
         return self.value
 
 class PlanType(enum.Enum):
-    IN = "Individual"
-    P2 = "Consulta/Reconsulta"
     P4 = "Pacote 4"
+    P2 = "Consulta/Reconsulta"    
+    IN = "Individual"
+    AV = "Avaliação"
 
     @classmethod
     def choices(cls):
@@ -52,7 +54,7 @@ class Patient(db.Model):
     inactive = Column(Boolean, default=False)
     note = Column(Text)
     created = Column(DateTime, default=datetime.utcnow)
-
+    
 
 class Plan(db.Model):
     __tablename__ = 'plan'
