@@ -6,13 +6,20 @@ from wtforms.validators import DataRequired
 from mpbox import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType
 
+from datetime import date, time, datetime
+
 
 bp = Blueprint("plan", __name__, url_prefix="/plan")
 
 
 @bp.app_template_filter('to_date')
-def format_datetime(date):
+def format_date(date):
     return date.strftime('%d/%m/%Y')
+
+
+@bp.app_template_filter('to_time')
+def format_date(time):
+    return time.strftime("%H:%M")
 
 
 def isActivePlan(plan):
@@ -67,7 +74,12 @@ def delete(id):
 @bp.route("/<int:id>/visit", methods=("GET", "POST"))
 def visit(id):
     plan = Plan.query.get(id)
+    
     visit = Visit(plan=plan)
+
+    visit.date = date.today()
+    visit.time = datetime.time(datetime.now())
+
     db.session.add(visit)
     db.session.commit()
     flash('Consulta Adicionada.')

@@ -46,17 +46,21 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
+                                <th scope="col">#</th>
                                 <th scope="col">Data</th>
+                                <th scope="col">Hora</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {% for v in visits %}
                             <tr>
-                                <td><a href="/visit/{{ v.id }}" title="Id">{{ v.id }}</a> </td>
-                                <td><a href="/visit/{{ v.id }}" title="Data">{{ v.created.date()|to_date }}</a></td>
-                                <td>
+                                <td>{{ v.id }}</td>
+                                <td>{{ v.date|to_date }}</td>
+                                <td>{{ v.time|to_time }}</td>
+                                <td>                                    
                                     <a href="{{ url_for('visit.update', id=v['id']) }}" title="{{ v.name }}">
                                         <button class="btn btn-outline-secondary">Editar</button>
                                     </a>
