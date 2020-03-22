@@ -83,7 +83,7 @@ def visit(id):
     db.session.add(visit)
     db.session.commit()
     flash('Consulta Adicionada.')
-    return redirect(url_for("patient.index", patient_id=plan.patient_id))
+    return redirect(url_for("patient.plans", id=plan.patient_id))
 
 
 class PlanForm(FlaskForm):

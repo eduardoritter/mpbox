@@ -19,15 +19,26 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col" style="width:40%">Plano Ativo</th>
-        <th scope="col"></th>
-        <th scope="col"></th>
-        <th scope="col"></th>
+        <th scope="col" style="width:5%">#</th>
+        <th scope="col" style="width:65%">Plano Ativo</th>
+        <th scope="col" style="width:10%"></th>
+        <th scope="col" style="width:10%"></th>
+        <th scope="col" style="width:10%"></th>
       </tr>
     </thead>
 
     <tbody>
+
+      {% if not activePlans %}
+      <tr>
+        <th scope="row"></th>
+        <td>Paciente sem plano ativo !</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>      
+      {% endif %}
+      
       {% for p in activePlans %}
       <tr>
         <th scope="row">{{ p.id }}</th>
@@ -56,15 +67,17 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col" style="width:40%">Plano</th>
-        <th scope="col"></th>
-        <th scope="col"></th>
-        <th scope="col"></th>
+        <th scope="col" style="width:5%">#</th>
+        <th scope="col" style="width:65%">Plano</th>
+        <th scope="col" style="width:10%"></th>
+        <th scope="col" style="width:10%"></th>
+        <th scope="col" style="width:10%"></th>
       </tr>
     </thead>
 
     <tbody>
+      
+
       {% for p in oldPlans %}
       <tr>
         <th scope="row">{{ p.id }}</th>
@@ -80,10 +93,6 @@
           </a>
         </td>
         <td>
-          <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
-            <button class="btn btn-outline-secondary" type="submit" value="Delete"
-              onclick="return confirm('Confirmar consulta?');">Consulta</button>
-          </form>
         </td>
       </tr>
       {% endfor %}
