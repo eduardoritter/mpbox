@@ -39,6 +39,14 @@
     </div>
     {% endif %}
 
+    {% if form %}
+    {% for field, errors in form.errors.items() %}
+    <div class="alert alert-warning" role="alert">
+    {{ form[field].label }}: {{ ', '.join(errors) }}
+    </div>
+    {% endfor %}  
+    {% endif %}
+
     {% block body %}{% endblock %}
   </div>
   <footer class="text-center"> Created by <a href="https://twitter.com/">@edu_ritter</a>.

@@ -54,7 +54,7 @@
           </a>
         </td>
         <td>
-          <form action="{{ url_for('plan.visit', id=p['id']) }}" method="post">
+          <form action="{{ url_for('plan.visit', id=p['id']) }}" method="get">
             <button class="btn btn-outline-secondary" type="submit" value="Delete"
               onclick="return confirm('Confirmar consulta?');">Consulta</button>
           </form>

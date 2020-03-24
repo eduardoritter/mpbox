@@ -10,11 +10,6 @@ from mpbox.model import Visit
 bp = Blueprint("visit", __name__, url_prefix="/visit")
 
 
-@bp.app_template_filter('to_date')
-def format_date(date):
-    return date.strftime('%d/%m/%Y')
-
-
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 def update(id):
 
@@ -26,9 +21,10 @@ def update(id):
 
     if request.method == "GET":
         visitForm = VisitForm(obj=visit)
-        return render_template("visit.html", form=visitForm)
+        return render_template("visit.html", form=visitForm, plano=visit.plan)
 
     form = VisitForm()
+    
     if form.validate_on_submit():
         form.populate_obj(visit)
         db.session.add(visit)
@@ -37,7 +33,8 @@ def update(id):
         flash('Record was successfully updated')
         return redirect(url_for("patient.plans", id=visit.plan.patient_id))
 
-    return "Delete Visit" + str(id)
+    #flash('Cannot update Plan')
+    return render_template("visit.html", form=form, plano=visit.plan)
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))

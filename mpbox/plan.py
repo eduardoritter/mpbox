@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired
 
 from mpbox import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType
+from mpbox.visit import VisitForm
 
 from datetime import date, time, datetime
 
@@ -14,7 +15,7 @@ bp = Blueprint("plan", __name__, url_prefix="/plan")
 
 @bp.app_template_filter('to_date')
 def format_date(date):
-    return date.strftime('%d/%m/%Y')
+    return date.strftime("%d/%m/%Y")
 
 
 @bp.app_template_filter('to_time')
@@ -74,16 +75,30 @@ def delete(id):
 @bp.route("/<int:id>/visit", methods=("GET", "POST"))
 def visit(id):
     plan = Plan.query.get(id)
+
+    visit = Visit()
+
+    if request.method == "GET":        
+        visit.date = date.today()
+        visit.time = datetime.time(datetime.now())
+        visitForm = VisitForm(obj=visit)
+        return render_template("visit.html", form=visitForm, plano=plan)
+
+    form = VisitForm()
+    if form.validate_on_submit():
+        form.populate_obj(visit)
+        visit.plan = plan
+        db.session.add(visit)
+        db.session.commit()
+        flash('Visita adicionada.')
+        return redirect(url_for("patient.plans", id=plan.patient_id))
+
+    #flash('Cannot update Plan')
+    return render_template("visit.html", form=form, plano=plan)
+
+        
+
     
-    visit = Visit(plan=plan)
-
-    visit.date = date.today()
-    visit.time = datetime.time(datetime.now())
-
-    db.session.add(visit)
-    db.session.commit()
-    flash('Consulta Adicionada.')
-    return redirect(url_for("patient.plans", id=plan.patient_id))
 
 
 class PlanForm(FlaskForm):
