@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
-from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, validators
+from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
 from flask_login import login_required, current_user
 
 from mpbox import db
@@ -33,14 +33,16 @@ def create():
         return render_template("patient.html", form=form)
 
     patient = Patient()
-    form.populate_obj(patient)
 
-    db.session.add(patient)
-    db.session.commit()
+    if form.validate_on_submit():
+        form.populate_obj(patient)
+        db.session.add(patient)
+        db.session.commit()
 
-    flash('Record was successfully added')
+        flash('Paciente foi adicionado !')
+        return redirect(url_for(".index"))
 
-    return redirect(url_for(".index"))
+    return render_template("patient.html", form=form)
 
 
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
@@ -48,18 +50,18 @@ def update(id):
     patient = Patient.query.get(id)
     form = PatientForm(obj=patient)
 
-    if not patient:
-        abort(404)
-
     if request.method == "GET":
         return render_template("patient.html", form=form)
 
-    form.populate_obj(patient)
-    db.session.commit()
-    flash('Record was successfully updated')
+    if form.validate_on_submit():
+        form.populate_obj(patient)
+        db.session.add(patient)
+        db.session.commit()
 
-    return redirect(url_for(".index"))
+        flash('Paciente foi atualizado !')
+        return redirect(url_for(".index"))
 
+    return render_template("patient.html", form=form)
 
 @bp.route("/<int:id>/delete", methods=("POST",))
 def delete(id):
@@ -89,7 +91,7 @@ def create_plan(id):
     planForm = PlanForm()
 
     if request.method == "GET": 
-        return render_template("plan.html", patient=patient, form=planForm)
+        return render_template("plan.html", patient=patient, form=planForm, readonly=False)
     
     plans = patient.plans
     for plan in plans:
@@ -117,5 +119,6 @@ def create_plan(id):
 class PatientForm(FlaskForm):
     name = StringField('Nome', validators=[validators.required()])
     cpf = StringField('CPF', validators=[validators.required()])
-    email = StringField('Email', validators=[validators.required(), validators.length(min=6, max=35)])
+    email = StringField('Email', validators=[validators.Email(), validators.required()])
+    birthdate = DateField('Data de Nascimento', format='%d/%m/%Y', validators=[validators.required()])
     note = TextAreaField('Notas')

@@ -51,7 +51,7 @@ def update(id):
 
     if request.method == "GET":
         planForm = PlanForm(obj=plan)
-        return render_template("plan.html", form=planForm)
+        return render_template("plan.html", form=planForm, readonly=False)
 
     form = PlanForm()
     if form.validate_on_submit():
@@ -64,7 +64,7 @@ def update(id):
         return redirect(url_for("patient.plans", id=plan.patient_id))
 
     flash('Cannot update Plan')
-    return render_template("plan.html", form=planForm)
+    return render_template("plan.html", form=planForm, readonly=False)
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))
@@ -95,10 +95,6 @@ def visit(id):
 
     #flash('Cannot update Plan')
     return render_template("visit.html", form=form, plano=plan)
-
-        
-
-    
 
 
 class PlanForm(FlaskForm):

@@ -1,11 +1,20 @@
 {% extends "layout.html" %}
 
+{% block jscript %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#value').mask('0000.00', {reverse: true});
+    });
+</script>
+{% endblock %}
+
 {% block title %}Home{% endblock %}
 
 {% block body %}
 <div class="posts">
     <div class="row">
         <div class="offset-sm-2 col-sm-8">
+            {{ readonly }}
             {% if patients %}
             <h2>{{ patient.name }} - Novo Plano</h2>
             {% endif %}
@@ -14,26 +23,26 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         {{ form.plan_type.label }}
-                        {{ form.plan_type(class_="form-control") }}
+                        {{ form.plan_type(class_="form-control", readonly=readonly) }}
                     </div>
                     <div class="form-group col-md-6">
                         {{ form.payment_type.label }}
-                        {{ form.payment_type(class_="form-control") }}
+                        {{ form.payment_type(class_="form-control", readonly=readonly) }}
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         {{ form.value.label }}
-                        {{ form.value(class_="form-control") }}
+                        {{ form.value(class_="form-control", readonly=readonly) }}
                     </div>
                     <div class="form-group col-md-6">
                         {{ form.receipt.label }}
-                        {{ form.receipt(class_="form-control") }}
+                        {{ form.receipt(class_="form-control", readonly=readonly) }}
                     </div>
                 </div>
                 <div class="form-group">
                     {{ form.note.label }}
-                    {{ form.note(class_="form-control") }}
+                    {{ form.note(class_="form-control", readonly=readonly) }}
                 </div>
                 {% if not readonly %}
                 <button class="btn btn-primary btn-lg btn-block" type="submit">Salvar</button>
