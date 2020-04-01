@@ -109,7 +109,7 @@ def create_plan(id):
         db.session.commit()
 
         flash('Record was successfully added')
-        return redirect(url_for(".index"))
+        return redirect(url_for("patient.plans", id=patient.id))
     
     flash('Cannot update Plan')
     return render_template("plan.html", 

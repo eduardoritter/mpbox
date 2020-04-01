@@ -39,7 +39,7 @@ def isActivePlan(plan):
 def display(id):
     plan = Plan.query.get(id)
     planForm = PlanForm(obj=plan)
-    return render_template("plan.html", form=planForm, visits=plan.visits, readonly=True)
+    return render_template("plan.html", form=planForm, visits=plan.visits, patient=plan.patient, readonly=True )
 
 
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
@@ -51,7 +51,7 @@ def update(id):
 
     if request.method == "GET":
         planForm = PlanForm(obj=plan)
-        return render_template("plan.html", form=planForm, readonly=False)
+        return render_template("plan.html", form=planForm, patient=plan.patient, readonly=False)
 
     form = PlanForm()
     if form.validate_on_submit():
@@ -64,12 +64,28 @@ def update(id):
         return redirect(url_for("patient.plans", id=plan.patient_id))
 
     flash('Cannot update Plan')
-    return render_template("plan.html", form=planForm, readonly=False)
+    return render_template("plan.html", form=planForm, patient=plan.patient, readonly=False)
 
 
-@bp.route("/<int:id>/delete", methods=("POST",))
+@bp.route("/<int:id>/delete", methods=("GET",))
 def delete(id):
-    return "Delete Plan" + str(id)
+    plan = Plan.query.get(id)
+
+    if not plan:
+        # abort(404)
+        return
+    
+    patient = plan.patient
+
+    if (len( plan.visits ) > 0):
+        flash('Não foi possivel excluir o plano, Existe consulta registrada!')
+        return redirect(url_for("patient.plans", id=patient.id))
+
+    db.session.delete(plan)
+    db.session.commit()
+    flash('Plano foi excluido!')
+
+    return redirect(url_for("patient.plans", id=patient.id))
 
 
 @bp.route("/<int:id>/visit", methods=("GET", "POST"))
@@ -77,24 +93,31 @@ def visit(id):
     plan = Plan.query.get(id)
 
     visit = Visit()
+    visitForm = VisitForm()
 
     if request.method == "GET":        
         visit.date = date.today()
         visit.time = datetime.time(datetime.now())
         visitForm = VisitForm(obj=visit)
         return render_template("visit.html", form=visitForm, plano=plan)
+    
+    
+    if visitForm.validate_on_submit():        
+        visitForm.populate_obj(visit)
 
-    form = VisitForm()
-    if form.validate_on_submit():
-        form.populate_obj(visit)
+        for v in plan.visits:
+            if v.date == visit.date:                
+                flash('Já existe consulta registrada na data ' + visit.date.strftime("%d/%m/%Y"))
+                return render_template("visit.html", form=visitForm, plano=plan)
+
         visit.plan = plan
         db.session.add(visit)
         db.session.commit()
-        flash('Visita adicionada.')
+        flash('Consulta adicionada!')
         return redirect(url_for("patient.plans", id=plan.patient_id))
 
-    #flash('Cannot update Plan')
-    return render_template("visit.html", form=form, plano=plan)
+    #flash('Cannot update Plan')    
+    return render_template("visit.html", form=visitForm, plano=plan)
 
 
 class PlanForm(FlaskForm):
