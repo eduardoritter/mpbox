@@ -28,6 +28,27 @@ class PaymentType(enum.Enum):
     def __html__(self):
         return self.value
 
+class AdditionalPaymentType(enum.Enum):
+    NA = "Não Aplicável"
+    DI = "Dinheiro"
+    DB = "Debito"
+    DP = "Deposito"
+    CA = "Credito A vista"
+    C2 = "Credito 2 Parcelas"
+    C3 = "Credito 3 Parcelas"
+    C4 = "Credito 4 Parcelas"
+    CO = "Cortesia"
+
+    @classmethod
+    def choices(cls):
+        return [(choice.name, choice.value) for choice in cls]
+
+    def __str__(self):
+        return str(self.name)
+
+    def __html__(self):
+        return self.value
+
 class PlanType(enum.Enum):
     P4 = "Pacote 4"
     P2 = "Consulta/Reconsulta"    
@@ -64,6 +85,9 @@ class Plan(db.Model):
     plan_type = Column(Enum(PlanType), nullable=False)
     payment_type = Column(Enum(PaymentType), nullable=False)
     value = Column(Numeric(precision=6, scale=2))
+    additional_payment_type = Column(Enum(AdditionalPaymentType))
+    additional_value = Column(Numeric(precision=6, scale=2))
+    total_amount = Column(Numeric(precision=6, scale=2))
     receipt = Column(Boolean, default=False)
     note = Column(Text)
     visits = relationship("Visit", backref='plan')

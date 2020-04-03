@@ -4,7 +4,7 @@ from wtforms import SelectField, TextAreaField, BooleanField, DecimalField
 from wtforms.validators import DataRequired
 
 from mpbox import db
-from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType
+from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.visit import VisitForm
 
 from datetime import date, time, datetime
@@ -122,8 +122,10 @@ def visit(id):
 
 class PlanForm(FlaskForm):
     plan_type = SelectField('Plano', choices=PlanType.choices())
-    payment_type = SelectField(
-        'Forma de Pagamento', choices=PaymentType.choices())
+    payment_type = SelectField('Forma de Pagamento', choices=PaymentType.choices())
     value = DecimalField('Valor', validators=[DataRequired()])
+    additional_payment_type = SelectField('Forma de Pagamento Adicional', choices=AdditionalPaymentType.choices())
+    additional_value = DecimalField('Valor Adicional')
+    total_amount = DecimalField('Total', validators=[DataRequired()])
     receipt = BooleanField('Recibo')
     note = TextAreaField('Notas')

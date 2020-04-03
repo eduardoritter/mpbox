@@ -4,6 +4,20 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#value').mask('0000.00', { reverse: true });
+        $('#additional_value').mask('0000.00', { reverse: true });
+        $('#total_amount').mask('0000.00', { reverse: true });
+    });
+
+    $(function () {
+        var $value = $('#value'),
+            $additional_value = $('#additional_value'),
+            $total_amount = $('#total_amount');
+        $value.on('input', function () {
+            $total_amount.val(parseFloat( +$value.val() + +$additional_value.val() ).toFixed(2));
+        });        
+        $additional_value.on('input', function () {
+            $total_amount.val(parseFloat( +$value.val() + +$additional_value.val() ).toFixed(2));
+        });
     });
 </script>
 {% endblock %}
@@ -14,107 +28,141 @@
 
 <div class="offset-sm-2 col-sm-8"></div>
 
-    {% if patient %}
-    <h5>Paciente - {{ patient.name }}</h5>
+{% if patient %}
+<h5>Paciente - {{ patient.name }}</h5>
+{% endif %}
+
+<hr class="mb-4" />
+
+<form method="post">
+    {{ form.csrf_token }}
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            {{ form.plan_type.label }}
+            {{ form.plan_type(class_="form-control", readonly=readonly) }}
+        </div>
+        <div class="form-group col-md-3">
+            {{ form.payment_type.label }}
+            {{ form.payment_type(class_="form-control", readonly=readonly) }}
+        </div>
+        <div class="form-group col-md-2">
+            {{ form.value.label }}
+            {{ form.value(class_="form-control", readonly=readonly) }}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            {{ form.receipt.label }}
+            {{ form.receipt(class_="form-control", readonly=readonly) }}
+        </div>
+        <div class="form-group col-md-3">
+            {{ form.additional_payment_type.label }}
+            {{ form.additional_payment_type(class_="form-control", readonly=readonly) }}
+        </div>
+        <div class="form-group col-md-2">
+            {{ form.additional_value.label }}
+            {{ form.additional_value(class_="form-control", readonly=readonly) }}
+        </div>
+        <div class="form-group col-md-2">
+            {{ form.total_amount.label }}
+            {{ form.total_amount(class_="form-control", readonly=readonly) }}
+        </div>
+    </div>
+    <div class="form-group">
+        {{ form.note.label }}
+        {{ form.note(class_="form-control", readonly=readonly) }}
+    </div>
+    {% if not readonly %}
+    <button class="btn btn-primary btn-lg btn-block" type="submit">Salvar</button>
     {% endif %}
+</form>
 
-    <hr class="mb-4" />
+{% if readonly %}
+<ul class="edit">
+    <div class="table-responsive-sm">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">
+                        Data
+                        <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"
+                                clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </th>
+                    <th scope="col">
+                        Hora
+                        <svg class="bi bi-clock" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M8 15A7 7 0 108 1a7 7 0 000 14zm8-7A8 8 0 110 8a8 8 0 0116 0z"
+                                clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M7.5 3a.5.5 0 01.5.5v5.21l3.248 1.856a.5.5 0 01-.496.868l-3.5-2A.5.5 0 017 9V3.5a.5.5 0 01.5-.5z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
 
-    <form method="post">
-        {{ form.csrf_token }}
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                {{ form.plan_type.label }}
-                {{ form.plan_type(class_="form-control", readonly=readonly) }}
-            </div>
-            <div class="form-group col-md-6">
-                {{ form.payment_type.label }}
-                {{ form.payment_type(class_="form-control", readonly=readonly) }}
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                {{ form.value.label }}
-                {{ form.value(class_="form-control", readonly=readonly) }}
-            </div>
-            <div class="form-group col-md-6">
-                {{ form.receipt.label }}
-                {{ form.receipt(class_="form-control", readonly=readonly) }}
-            </div>
-        </div>
-        <div class="form-group">
-            {{ form.note.label }}
-            {{ form.note(class_="form-control", readonly=readonly) }}
-        </div>
-        {% if not readonly %}
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Salvar</button>
-        {% endif %}
-    </form>
+            <tbody>
+                {% for v in visits %}
+                <tr>
+                    <td>{{ v.id }}</td>
+                    <td>{{ v.date|to_date }}</td>
+                    <td>{{ v.time|to_time }}</td>
+                    <td>
+                        <a href="{{ url_for('visit.update', id=v['id']) }}" title="{{ v.name }}">
+                            <button class="btn btn-outline-secondary">
+                                Editar
+                                <svg class="bi bi-pen" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M5.707 13.707a1 1 0 01-.39.242l-3 1a1 1 0 01-1.266-1.265l1-3a1 1 0 01.242-.391L10.086 2.5a2 2 0 012.828 0l.586.586a2 2 0 010 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 011.414 0l.586.586a1 1 0 010 1.414L5 13l-3 1 1-3z"
+                                        clip-rule="evenodd" />
+                                    <path fill-rule="evenodd"
+                                        d="M9.854 2.56a.5.5 0 00-.708 0L5.854 5.855a.5.5 0 01-.708-.708L8.44 1.854a1.5 1.5 0 012.122 0l.293.292a.5.5 0 01-.707.708l-.293-.293z"
+                                        clip-rule="evenodd" />
+                                    <path
+                                        d="M13.293 1.207a1 1 0 011.414 0l.03.03a1 1 0 01.03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                                </svg>
+                            </button>
+                        </a>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('visit.delete', id=v['id']) }}" method="post">
+                            <button class="btn btn-outline-secondary" type="submit" value="Delete"
+                                onclick="return confirm('Deseja excluir consulta ?');">
+                                <svg class="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 16 16"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M2.5 1a1 1 0 00-1 1v1a1 1 0 001 1H3v9a2 2 0 002 2h6a2 2 0 002-2V4h.5a1 1 0 001-1V2a1 1 0 00-1-1H10a1 1 0 00-1-1H7a1 1 0 00-1 1H2.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM8 5a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 018 5zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    {% if readonly %}
-    <ul class="edit">
-        <div class="table-responsive-sm">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Data</th>
-                        <th scope="col">Hora</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
+</ul>
+{% endif %}
 
-                <tbody>
-                    {% for v in visits %}
-                    <tr>
-                        <td>{{ v.id }}</td>
-                        <td>{{ v.date|to_date }}</td>
-                        <td>{{ v.time|to_time }}</td>
-                        <td>
-                            <a href="{{ url_for('visit.update', id=v['id']) }}" title="{{ v.name }}">
-                                <button class="btn btn-outline-secondary">
-                                    <svg class="bi bi-pen" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M5.707 13.707a1 1 0 01-.39.242l-3 1a1 1 0 01-1.266-1.265l1-3a1 1 0 01.242-.391L10.086 2.5a2 2 0 012.828 0l.586.586a2 2 0 010 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 011.414 0l.586.586a1 1 0 010 1.414L5 13l-3 1 1-3z"
-                                            clip-rule="evenodd" />
-                                        <path fill-rule="evenodd"
-                                            d="M9.854 2.56a.5.5 0 00-.708 0L5.854 5.855a.5.5 0 01-.708-.708L8.44 1.854a1.5 1.5 0 012.122 0l.293.292a.5.5 0 01-.707.708l-.293-.293z"
-                                            clip-rule="evenodd" />
-                                        <path
-                                            d="M13.293 1.207a1 1 0 011.414 0l.03.03a1 1 0 01.03 1.383L13.5 4 12 2.5l1.293-1.293z" />
-                                    </svg>
-                                </button>
-                            </a>
-                        </td>
-                        <td>
-                            <form action="{{ url_for('visit.delete', id=v['id']) }}" method="post">
-                                <button class="btn btn-outline-secondary" type="submit" value="Delete"
-                                    onclick="return confirm('Deseja excluir consulta ?');">
-                                    <svg class="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 16 16"
-                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M2.5 1a1 1 0 00-1 1v1a1 1 0 001 1H3v9a2 2 0 002 2h6a2 2 0 002-2V4h.5a1 1 0 001-1V2a1 1 0 00-1-1H10a1 1 0 00-1-1H7a1 1 0 00-1 1H2.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM8 5a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 018 5zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<hr class="mb-4" />
 
-    </ul>
-    {% endif %}
-
-    <hr class="mb-4" />
-
-    <a href="{{ url_for('patient.plans', id=patient.id ) }}" title="Voltar">
-        <button type="button" class="btn btn-outline-secondary btn-lg btn-block">Voltar</button>
-    </a>
+<a href="{{ url_for('patient.plans', id=patient.id ) }}" title="Voltar">
+    <button type="button" class="btn btn-outline-secondary btn-lg btn-block">Voltar</button>
+</a>
 </div>
 
 {% endblock %}

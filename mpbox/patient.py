@@ -88,7 +88,7 @@ def plans(id):
 @bp.route("/<int:id>/create_plan", methods=("GET", "POST"))
 def create_plan(id):
     patient = Patient.query.get(id)    
-    planForm = PlanForm()
+    planForm = PlanForm(additional_value=0.00)
 
     if request.method == "GET": 
         return render_template("plan.html", patient=patient, form=planForm, readonly=False)

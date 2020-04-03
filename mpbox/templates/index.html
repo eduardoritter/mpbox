@@ -9,6 +9,7 @@
     <li class="nav-item active">
       <a href="{{ url_for('patient.create') }}" title="Novo Paciente">
         <button class="btn btn-outline-secondary">
+          Adicionar Paciente
           <svg class="bi bi-person-plus-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 100-6 3 3 0 000 6zm7.5-3a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
             <path fill-rule="evenodd" d="M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z" clip-rule="evenodd"/>
@@ -34,9 +35,9 @@
   <thead>
     <tr>
       <th scope="col" style="width:5%">#</th>
-      <th scope="col" style="width:75%">Nome</th>
-      <th scope="col" style="width:5%"></th>
-      <th scope="col" style="width:15%"></th>
+      <th scope="col" style="width:65%">Paciente</th>
+      <th scope="col" style="width:20%"></th>
+      <th scope="col" style="width:20%"></th>
     </tr>
   </thead>
   <tbody>
@@ -47,6 +48,7 @@
       <td>
         <a href="{{ url_for('patient.update', id=p['id']) }}" title="{{ p.name }}">
           <button class="btn btn-outline-secondary">
+            Editar Paciente        
             <svg class="bi bi-pen" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M5.707 13.707a1 1 0 01-.39.242l-3 1a1 1 0 01-1.266-1.265l1-3a1 1 0 01.242-.391L10.086 2.5a2 2 0 012.828 0l.586.586a2 2 0 010 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 011.414 0l.586.586a1 1 0 010 1.414L5 13l-3 1 1-3z" clip-rule="evenodd"/>
               <path fill-rule="evenodd" d="M9.854 2.56a.5.5 0 00-.708 0L5.854 5.855a.5.5 0 01-.708-.708L8.44 1.854a1.5 1.5 0 012.122 0l.293.292a.5.5 0 01-.707.708l-.293-.293z" clip-rule="evenodd"/>
@@ -56,7 +58,13 @@
         </a>
       </td>
       <td><a href="{{ url_for('patient.plans', id=p['id']) }}" title="{{ p.name }}">
-          <button class="btn btn-outline-secondary">Planos</button>
+          <button class="btn btn-outline-secondary">Visualizar Plano
+            <svg class="bi bi-file-earmark-text" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 1h5v1H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6h1v7a2 2 0 01-2 2H4a2 2 0 01-2-2V3a2 2 0 012-2z"/>
+              <path d="M9 4.5V1l5 5h-3.5A1.5 1.5 0 019 4.5z"/>
+              <path fill-rule="evenodd" d="M5 11.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zm0-2a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5a.5.5 0 01-.5-.5zm0-2a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5a.5.5 0 01-.5-.5z" clip-rule="evenodd"/>
+            </svg>
+          </button>
         </a>
       </td>
     </tr>
