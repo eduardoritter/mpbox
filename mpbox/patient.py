@@ -4,7 +4,7 @@ from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanF
 from flask_login import login_required, current_user
 
 from mpbox import db
-from mpbox.model import Patient, Plan
+from mpbox.model import Patient, Visit, Plan
 from mpbox.plan import PlanForm, isActivePlan
 
 
@@ -13,7 +13,8 @@ bp = Blueprint("patient", __name__, url_prefix="/patient")
 
 @bp.route("/")
 def index():
-    return render_template("index.html")
+    lastVisits = Visit.query.order_by(Visit.created.desc()).limit(5)    
+    return render_template("index.html", lastVisits=lastVisits)
 
 
 @bp.route("/search")
