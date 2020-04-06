@@ -11,12 +11,14 @@ from mpbox.plan import PlanForm, isActivePlan
 bp = Blueprint("patient", __name__, url_prefix="/patient")
 
 
+@login_required
 @bp.route("/")
 def index():
     lastVisits = Visit.query.order_by(Visit.created.desc()).limit(5)    
     return render_template("index.html", lastVisits=lastVisits)
 
 
+@login_required
 @bp.route("/search")
 def search():
     name = request.args.get('name')    
@@ -24,9 +26,8 @@ def search():
 
     return render_template("index.html", patients=patients)
 
-
-@bp.route("/create", methods=("GET", "POST"))
 @login_required
+@bp.route("/create", methods=("GET", "POST"))
 def create():
     form = PatientForm()
 
@@ -46,6 +47,7 @@ def create():
     return render_template("patient.html", form=form)
 
 
+@login_required
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 def update(id):
     patient = Patient.query.get(id)
@@ -64,11 +66,14 @@ def update(id):
 
     return render_template("patient.html", form=form)
 
+
+@login_required
 @bp.route("/<int:id>/delete", methods=("POST",))
 def delete(id):
     return "Delete Patient" + str(id)
 
 
+@login_required
 @bp.route("/<int:id>/plans", methods=("GET", "POST"))
 def plans(id):
     patient = Patient.query.get(id)
@@ -86,6 +91,7 @@ def plans(id):
     return render_template("patient_plans.html", patient=patient, activePlans=activePlans, oldPlans=oldPlans)
 
 
+@login_required
 @bp.route("/<int:id>/create_plan", methods=("GET", "POST"))
 def create_plan(id):
     patient = Patient.query.get(id)    
