@@ -5,8 +5,7 @@ from sqlalchemy import Integer, String, DateTime, Column, Text, Numeric, Text, F
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
 from flask_login import UserMixin
-
-from mpbox import db
+from mpbox.db import db
 
 class PaymentType(enum.Enum):
     DI = "Dinheiro"

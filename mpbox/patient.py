@@ -2,8 +2,7 @@ from flask import Blueprint, render_template, request, redirect, request, url_fo
 from flask_wtf import FlaskForm, Form
 from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
 from flask_login import login_required, current_user
-
-from mpbox import db
+from mpbox.db import db
 from mpbox.model import Patient, Visit, Plan
 from mpbox.plan import PlanForm, isActivePlan
 
@@ -11,23 +10,25 @@ from mpbox.plan import PlanForm, isActivePlan
 bp = Blueprint("patient", __name__, url_prefix="/patient")
 
 
-@login_required
+
 @bp.route("/")
+@login_required
 def index():
     lastVisits = Visit.query.order_by(Visit.created.desc()).limit(5)    
     return render_template("index.html", lastVisits=lastVisits)
 
 
-@login_required
 @bp.route("/search")
+@login_required
 def search():
     name = request.args.get('name')    
     patients = Patient.query.filter(Patient.name.like('%' + str(name) + '%')).all()
 
     return render_template("index.html", patients=patients)
 
-@login_required
+
 @bp.route("/create", methods=("GET", "POST"))
+@login_required
 def create():
     form = PatientForm()
 
@@ -47,8 +48,9 @@ def create():
     return render_template("patient.html", form=form)
 
 
-@login_required
+
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
+@login_required
 def update(id):
     patient = Patient.query.get(id)
     form = PatientForm(obj=patient)
@@ -67,14 +69,14 @@ def update(id):
     return render_template("patient.html", form=form)
 
 
-@login_required
 @bp.route("/<int:id>/delete", methods=("POST",))
+@login_required
 def delete(id):
     return "Delete Patient" + str(id)
 
 
-@login_required
 @bp.route("/<int:id>/plans", methods=("GET", "POST"))
+@login_required
 def plans(id):
     patient = Patient.query.get(id)
     plans = patient.plans
@@ -91,8 +93,8 @@ def plans(id):
     return render_template("patient_plans.html", patient=patient, activePlans=activePlans, oldPlans=oldPlans)
 
 
-@login_required
 @bp.route("/<int:id>/create_plan", methods=("GET", "POST"))
+@login_required
 def create_plan(id):
     patient = Patient.query.get(id)    
     planForm = PlanForm(additional_value=0.00)

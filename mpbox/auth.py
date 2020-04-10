@@ -1,11 +1,16 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, logout_user
-
-from mpbox import db, login_manager
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
+from flask_login import LoginManager, login_user, logout_user
 from mpbox.model import User
+from mpbox.db import db
 
 
 bp = Blueprint('auth', __name__)
+login_manager = LoginManager()
+
+
+def init_login_manager(app):
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
 
 
 @bp.route('/login', methods=['GET'])
@@ -40,6 +45,11 @@ def login_post():
     return redirect(url_for('auth.login'))
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
 @bp.route('/create_user')
 def create_user():
 
@@ -54,8 +64,3 @@ def create_user():
 
     flash('User created.')
     return redirect(url_for('auth.login'))
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)

@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm, Form
 from wtforms import SelectField, TextAreaField, BooleanField, DecimalField
 from wtforms.validators import DataRequired
 
-from mpbox import db
+from mpbox.db import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.visit import VisitForm
 

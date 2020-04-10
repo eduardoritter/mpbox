@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm, Form
 from wtforms import DateField, TimeField
 from wtforms.validators import DataRequired
 
-from mpbox import db
+from mpbox.db import db
 from mpbox.model import Visit
 
 
