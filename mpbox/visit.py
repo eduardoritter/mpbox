@@ -7,7 +7,7 @@ from mpbox.db import db
 from mpbox.model import Visit
 
 
-bp = Blueprint("visit", __name__, url_prefix="/visit")
+bp = Blueprint("visit", __name__)
 
 
 @bp.route("/<int:id>/update", methods=("GET", "POST"))

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
-from flask_login import LoginManager, login_user, logout_user
+from flask_login import LoginManager, login_user, logout_user, login_required
 from mpbox.model import User
 from mpbox.db import db
 
@@ -39,7 +39,7 @@ def login_post():
     if user and user.verify_password(password):
         login_user(user)
         flash('Logged in successfully.')
-        return redirect(url_for('patient.index'))
+        return redirect(url_for('home.home'))
 
     flash('Please check your login details and try again.')
     return redirect(url_for('auth.login'))
@@ -50,13 +50,25 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-@bp.route('/create_user')
+@bp.route('/create_user', methods=['GET'])
+@login_required
 def create_user():
 
+    username = request.args.get('username')
+    password = request.args.get('password')
+
+    print(username)
+    print(password)
+
+    
+    if not username or not password:
+        flash('User not created.')
+        return redirect(url_for('auth.login'))
+    
     user = User()
 
-    user.username = 'ad'
-    user.password = '123'
+    user.username = username
+    user.password = password
     user.gen_hash()
 
     db.session.add(user)

@@ -7,7 +7,7 @@
 <nav class="navbar navbar-light bg-light">
   <ul class="navbar-nav mr-auto">
     <li class="nav-item active">
-      Paciente: {{patient.name}}
+      Paciente: <b>{{patient.name}}</b>
     </li>
   </ul>
 
@@ -46,7 +46,7 @@
     {% endif %}
 
     {% for p in activePlans %}
-    <tr>
+    <tr class="table-primary">
       <td>{{ p.id }}</td>
       <td>{{ p.plan_type }}</td>
       <td>

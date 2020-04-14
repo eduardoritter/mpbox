@@ -1,30 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
 from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
-from flask_login import login_required, current_user
+from flask_login import login_required
 from mpbox.db import db
-from mpbox.model import Patient, Visit, Plan
-from mpbox.plan import PlanForm, isActivePlan
+from mpbox.model import Patient, Visit, Plan, AdditionalPaymentType
+from mpbox.plan import PlanForm, is_active_plan, has_active_plan, validate_plan_data
 
 
-bp = Blueprint("patient", __name__, url_prefix="/patient")
-
-
-
-@bp.route("/")
-@login_required
-def index():
-    lastVisits = Visit.query.order_by(Visit.created.desc()).limit(5)    
-    return render_template("index.html", lastVisits=lastVisits)
-
-
-@bp.route("/search")
-@login_required
-def search():
-    name = request.args.get('name')    
-    patients = Patient.query.filter(Patient.name.like('%' + str(name) + '%')).all()
-
-    return render_template("index.html", patients=patients)
+bp = Blueprint("patient", __name__)
 
 
 @bp.route("/create", methods=("GET", "POST"))
@@ -43,7 +26,7 @@ def create():
         db.session.commit()
 
         flash('Paciente foi adicionado !')
-        return redirect(url_for(".index"))
+        return redirect(url_for("home.home"))
 
     return render_template("patient.html", form=form)
 
@@ -64,7 +47,7 @@ def update(id):
         db.session.commit()
 
         flash('Paciente foi atualizado !')
-        return redirect(url_for(".index"))
+        return redirect(url_for("home.home"))
 
     return render_template("patient.html", form=form)
 
@@ -85,7 +68,7 @@ def plans(id):
     oldPlans =[]
 
     for p in plans:
-        if isActivePlan(p):
+        if is_active_plan(p):
             activePlans.append(p)
         else:
             oldPlans.append(p)
@@ -103,15 +86,22 @@ def create_plan(id):
         return render_template("plan.html", patient=patient, form=planForm, readonly=False)
     
     plans = patient.plans
-    for plan in plans:
-        if isActivePlan(plan):
-            flash('Existe plano ativo!')
-            return render_template("plan.html",
-                                   patient=patient, plans=plans, form=planForm)
+
+    if has_active_plan(plans):
+        flash(patient.name + ' já possui plano ativo!')
+        return render_template("plan.html", patient=patient, plans=plans, form=planForm, readonly=False)
    
     if planForm.validate_on_submit():
         plan = Plan()
         planForm.populate_obj(plan)
+
+        try:
+            validate_plan_data(plan)
+        except Exception as error:
+            flash(error)            
+            return render_template("plan.html", 
+                            patient=patient, plans=plans, form=planForm, readonly=False)
+
         plan.patient=patient                               
     
         db.session.add(plan)
@@ -122,7 +112,7 @@ def create_plan(id):
     
     flash('Cannot update Plan')
     return render_template("plan.html", 
-                            patient=patient, plans=plans, form=planForm)
+                            patient=patient, plans=plans, form=planForm, readonly=False)
 
 
 class PatientForm(FlaskForm):

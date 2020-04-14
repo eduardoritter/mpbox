@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, request, url_fo
 from flask_wtf import FlaskForm, Form
 from wtforms import SelectField, TextAreaField, BooleanField, DecimalField
 from wtforms.validators import DataRequired
-
+from flask_login import login_required
 from mpbox.db import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.visit import VisitForm
@@ -10,7 +10,7 @@ from mpbox.visit import VisitForm
 from datetime import date, time, datetime
 
 
-bp = Blueprint("plan", __name__, url_prefix="/plan")
+bp = Blueprint("plan", __name__)
 
 
 @bp.app_template_filter('to_date')
@@ -23,7 +23,15 @@ def format_date(time):
     return time.strftime("%H:%M")
 
 
-def isActivePlan(plan):
+def has_active_plan(plans):
+    for plan in plans:
+        if isActivePlan(plan):
+            return True
+    
+    return False
+
+
+def is_active_plan(plan):
     if (plan.plan_type == PlanType.P2 and
             len(plan.visits) < 2):
         return True
@@ -35,7 +43,20 @@ def isActivePlan(plan):
     return False
 
 
+def validate_plan_data(plan):
+
+    if plan.additional_value == 0:
+        if plan.additional_payment_type != 'NA':
+            raise Exception('Verifique a Forma de Pagamento Adicional!')
+    else:
+        if plan.additional_payment_type == 'NA':
+            raise Exception('Informe a Forma de Pagamento Adicional!')
+
+    return True
+
+
 @bp.route("/<int:id>")
+@login_required
 def display(id):
     plan = Plan.query.get(id)
     planForm = PlanForm(obj=plan)
@@ -43,6 +64,7 @@ def display(id):
 
 
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
+@login_required
 def update(id):
     plan = Plan.query.get(id)
 
