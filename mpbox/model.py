@@ -5,16 +5,17 @@ from sqlalchemy import Integer, String, DateTime, Column, Text, Numeric, Text, F
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
 from flask_login import UserMixin
-from mpbox.db import db
+from mpbox.extensions import db
+
 
 class PaymentType(enum.Enum):
     DI = "Dinheiro"
-    DB = "Debito"
-    DP = "Deposito"
-    CA = "Credito A vista"
-    C2 = "Credito 2 Parcelas"
-    C3 = "Credito 3 Parcelas"
-    C4 = "Credito 4 Parcelas"
+    DB = "Débito"
+    DP = "Depósito"
+    CA = "Crédito a vista"
+    C2 = "Crédito 2 parcelas"
+    C3 = "Crédito 3 parcelas"
+    C4 = "Crédito 4 parcelas"
     CO = "Cortesia"
 
     @classmethod
@@ -30,13 +31,12 @@ class PaymentType(enum.Enum):
 class AdditionalPaymentType(enum.Enum):
     NA = "Não Aplicável"
     DI = "Dinheiro"
-    DB = "Debito"
-    DP = "Deposito"
-    CA = "Credito A vista"
-    C2 = "Credito 2 Parcelas"
-    C3 = "Credito 3 Parcelas"
-    C4 = "Credito 4 Parcelas"
-    CO = "Cortesia"
+    DB = "Débito"
+    DP = "Depósito"
+    CA = "Crédito a vista"
+    C2 = "Crédito 2 parcelas"
+    C3 = "Crédito 3 parcelas"
+    C4 = "Crédito 4 parcelas"
 
     @classmethod
     def choices(cls):
@@ -57,7 +57,7 @@ class PlanType(enum.Enum):
     @classmethod
     def choices(cls):
         return [(choice.name, choice.value) for choice in cls]
-    
+   
     def __str__(self):
         return str(self.name)
     
@@ -88,6 +88,7 @@ class Plan(db.Model):
     additional_value = Column(Numeric(precision=6, scale=2))
     total_amount = Column(Numeric(precision=6, scale=2))
     receipt = Column(Boolean, default=False)
+    paid = Column(Boolean, default=True)
     note = Column(Text)
     visits = relationship("Visit", backref='plan')
     created = Column(DateTime, default=datetime.utcnow)
@@ -98,6 +99,7 @@ class Visit(db.Model):
     __tablename__ = 'visit'
     id = Column(Integer, primary_key=True)
     plan_id = Column(Integer, ForeignKey('plan.id'))
+    sequence_number = Column(Integer, nullable=False)
     date = Column(Date)
     time = Column(Time)
     created = Column(DateTime, default=datetime.utcnow)
@@ -114,11 +116,3 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return pbkdf2_sha256.verify(password, self.password)
-
-class Log(db.Model):
-    __tablename__ = 'log'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    table = Column(String)
-    detail = Column(String)
-    created = Column(DateTime, default=datetime.utcnow)

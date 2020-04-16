@@ -12,7 +12,7 @@
   </ul>
 
   <a href="{{ url_for('patient.create_plan', id=patient['id']) }}" title="Novo">
-    <button class="btn btn-outline-secondary my-2 my-sm-0">
+    <button class="btn btn btn-info my-2 my-sm-0">
       Novo Plano
       <svg class="bi bi-file-plus" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 1H4a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V8h-1v5a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1h5V1z"/>
@@ -46,12 +46,12 @@
     {% endif %}
 
     {% for p in activePlans %}
-    <tr class="table-primary">
+    <tr class="table-info">
       <td>{{ p.id }}</td>
       <td>{{ p.plan_type }}</td>
       <td>
         <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
-          <button class="btn btn-outline-secondary">Editar
+          <button class="btn btn btn-info">Editar
             <svg class="bi bi-pen" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
               xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
@@ -65,7 +65,7 @@
           </button>
         </a>
         <a href="{{ url_for('plan.display', id=p['id']) }}" title="{{ p.name }}">
-          <button class="btn btn-outline-secondary">Visualizar
+          <button class="btn btn btn-info">Visualizar
             <svg class="bi bi-file-earmark-text" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
               xmlns="http://www.w3.org/2000/svg">
               <path
@@ -79,20 +79,18 @@
         </a>
       </td>
       <td>
-        <form action="{{ url_for('plan.visit', id=p['id']) }}" method="get">
-          <button class="btn btn-outline-secondary" type="submit" value="Delete"
-            onclick="return confirm('Deseja registrar a consulta ?');">
-            Registrar Consulta
+        <a href="{{ url_for('plan.visit', id=p['id']) }}" title="{{ p.name }}">
+          <button class="btn btn btn-info">Registrar Consulta
             <svg class="bi bi-file-check" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 1H4a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V8h-1v5a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1h5V1z"/>
               <path fill-rule="evenodd" d="M15.854 2.146a.5.5 0 010 .708l-3 3a.5.5 0 01-.708 0l-1.5-1.5a.5.5 0 01.708-.708L12.5 4.793l2.646-2.647a.5.5 0 01.708 0z" clip-rule="evenodd"/>
             </svg>          
-          </button>
-        </form>
+        </button>
+        </a>
       </td>
       <td>
         <form action="{{ url_for('plan.delete', id=p['id']) }}" method="get">
-          <button class="btn btn-outline-secondary" type="submit" value="Delete"
+          <button class="btn btn btn-info" type="submit" value="Delete"
             onclick="return confirm('Deseja excluir o plano - {{ p.plan_type }} ?');">
             <svg class="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
               xmlns="http://www.w3.org/2000/svg">
@@ -127,7 +125,7 @@
       <td>{{ p.plan_type }}</td>
       <td>        
         <a href="{{ url_for('plan.update', id=p['id']) }}" title="{{ p.name }}">
-          <button class="btn btn-outline-secondary">
+          <button class="btn btn btn-info">
             Editar
             <svg class="bi bi-pen" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
               xmlns="http://www.w3.org/2000/svg">
@@ -142,7 +140,7 @@
           </button>
         </a>
         <a href="{{ url_for('plan.display', id=p['id']) }}" title="{{ p.name }}">
-          <button class="btn btn-outline-secondary">Visualizar
+          <button class="btn btn btn-info">Visualizar
             <svg class="bi bi-file-earmark-text" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
               xmlns="http://www.w3.org/2000/svg">
               <path

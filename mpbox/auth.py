@@ -1,16 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import LoginManager, login_user, logout_user, login_required
 from mpbox.model import User
-from mpbox.db import db
+from mpbox.extensions import db, login_manager
 
 
 bp = Blueprint('auth', __name__)
-login_manager = LoginManager()
-
-
-def init_login_manager(app):
-    login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
 
 
 @bp.route('/login', methods=['GET'])
@@ -41,7 +35,7 @@ def login_post():
         flash('Logged in successfully.')
         return redirect(url_for('home.home'))
 
-    flash('Please check your login details and try again.')
+    flash('Credenciais inválidas, verifique e tente novamente.')
     return redirect(url_for('auth.login'))
 
 
@@ -51,7 +45,6 @@ def load_user(user_id):
 
 
 @bp.route('/create_user', methods=['GET'])
-@login_required
 def create_user():
 
     username = request.args.get('username')

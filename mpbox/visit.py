@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
-from wtforms import DateField, TimeField
+from wtforms import DateField, TimeField, SelectField
 from wtforms.validators import DataRequired
 
-from mpbox.db import db
-from mpbox.model import Visit
+from mpbox.extensions import db
+from mpbox.model import Visit, PlanType
 
 
 bp = Blueprint("visit", __name__)
@@ -30,10 +30,10 @@ def update(id):
         db.session.add(visit)
         db.session.commit()
 
-        flash('Record was successfully updated')
+        flash('Consulta foi atualizada com sucesso!')
         return redirect(url_for("patient.plans", id=visit.plan.patient_id))
 
-    #flash('Cannot update Plan')
+    flash('Erro não foi possível atualizar a consulta!')
     return render_template("visit.html", form=form, plano=visit.plan)
 
 
@@ -49,10 +49,11 @@ def delete(id):
 
     db.session.delete(visit)
     db.session.commit()
-
+    flash('Consulta foi excluída com sucesso!')
     return redirect(url_for("plan.display", id=plan.id))
 
 
 class VisitForm(FlaskForm):
+    sequence_number = SelectField('Consulta', choices=[(1, 'Primeira'), (2, 'Segunda'), (3, 'Terceira'), (4, 'Quarta')], coerce=int)
     date = DateField('Data', format='%d/%m/%Y', validators=[DataRequired()])
     time = TimeField('Hora', validators=[DataRequired()])
