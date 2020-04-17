@@ -45,15 +45,12 @@ def load_user(user_id):
 
 
 @bp.route('/create_user', methods=['GET'])
+@login_required
 def create_user():
 
     username = request.args.get('username')
     password = request.args.get('password')
-
-    print(username)
-    print(password)
-
-    
+   
     if not username or not password:
         flash('User not created.')
         return redirect(url_for('auth.login'))

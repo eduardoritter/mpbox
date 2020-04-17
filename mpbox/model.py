@@ -89,6 +89,7 @@ class Plan(db.Model):
     total_amount = Column(Numeric(precision=6, scale=2))
     receipt = Column(Boolean, default=False)
     paid = Column(Boolean, default=True)
+    expiry_date = Column(Date)
     note = Column(Text)
     visits = relationship("Visit", backref='plan')
     created = Column(DateTime, default=datetime.utcnow)

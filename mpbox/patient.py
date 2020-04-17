@@ -6,6 +6,8 @@ from mpbox.extensions import db
 from mpbox.model import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.plan import PlanForm
 from mpbox.validators import is_active_plan, has_active_plan, validate_plan, validate_patient
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
 bp = Blueprint('patient', __name__)
@@ -96,8 +98,10 @@ def plans(id):
 @bp.route('/<int:id>/create_plan', methods=('GET', 'POST'))
 @login_required
 def create_plan(id):
-    patient = Patient.query.get(id)    
-    planForm = PlanForm(additional_value=0.00)
+    patient = Patient.query.get(id)
+    expiry = date.today() + relativedelta(months=6)
+    planForm = PlanForm(additional_value=0.00, paid=True, 
+                        expiry_date=date.today() + relativedelta(months=6))
 
     if request.method == 'GET': 
         return render_template('plan.html', patient=patient, 

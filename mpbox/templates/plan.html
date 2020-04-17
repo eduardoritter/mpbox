@@ -35,7 +35,7 @@
 <form method="post">
     {{ form.csrf_token }}
     <div class="form-row">
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             {{ form.plan_type.label }}
             {{ form.plan_type(class_="form-control", readonly=readonly) }}
         </div>
@@ -53,13 +53,17 @@
                 {{ form.paid.label(class_="custom-control-label") }}  
             </div>
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-4" style="display: flex; justify-content: center; align-items: center;">
+        <div class="form-group col-md-1" style="display: flex; justify-content: center; align-items: center;">
             <div class="custom-control custom-checkbox">
                 {{ form.receipt(class_="custom-control-input", readonly=readonly) }}    
                 {{ form.receipt.label(class_="custom-control-label") }}                            
             </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            {{ form.expiry_date.label }}
+            {{ form.expiry_date(class_="form-control", readonly=readonly) }}
         </div>
         <div class="form-group col-md-4">
             {{ form.additional_payment_type.label }}
@@ -69,7 +73,7 @@
             {{ form.additional_value.label }}
             {{ form.additional_value(class_="form-control", readonly=readonly) }}
         </div>
-        <div class="form-group col-md-2">
+        <div class="form-group col-md-3">
             {{ form.total_amount.label }}
             {{ form.total_amount(class_="form-control", readonly=readonly) }}
         </div>

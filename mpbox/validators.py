@@ -25,7 +25,6 @@ def validate_plan(plan):
     else:
         if plan.additional_payment_type == AdditionalPaymentType.NA.name:
             raise Exception('Informe a Forma de Pagamento Adicional!')
-    
 
 
 

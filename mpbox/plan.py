@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
-from wtforms import SelectField, TextAreaField, BooleanField, DecimalField
+from wtforms import SelectField, TextAreaField, BooleanField, DecimalField, DateField
 from wtforms.validators import DataRequired
 from flask_login import login_required
 from mpbox.extensions import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.visit import VisitForm
 from mpbox.validators import validate_plan
-
 from datetime import date, time, datetime
 
 
@@ -135,4 +134,5 @@ class PlanForm(FlaskForm):
     total_amount = DecimalField('Total')
     receipt = BooleanField('Recibo')
     paid = BooleanField('Pago')
+    expiry_date = DateField('Validade', format='%d/%m/%Y', validators=[DataRequired()])
     note = TextAreaField('Notas')
