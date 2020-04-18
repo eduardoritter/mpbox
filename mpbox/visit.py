@@ -5,52 +5,59 @@ from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
 from mpbox.model import Visit, PlanType
+from mpbox.validators import validate_visit
 
 
-bp = Blueprint("visit", __name__)
+bp = Blueprint('visit', __name__)
 
 
-@bp.route("/<int:id>/update", methods=("GET", "POST"))
+@bp.route('/<int:id>/update', methods=('GET', 'POST'))
 def update(id):
 
     visit = Visit.query.get(id)
 
     if not visit:
-        # abort(404)
-        return
+        flash('Internal Error')
+        return redirect(url_for('home.home'))
 
-    if request.method == "GET":
-        visitForm = VisitForm(obj=visit)
-        return render_template("visit.html", form=visitForm, plano=visit.plan)
+    visitForm = VisitForm(obj=visit)
 
-    form = VisitForm()
-    
-    if form.validate_on_submit():
-        form.populate_obj(visit)
+    if request.method == 'GET':        
+        return render_template('visit.html', form=visitForm, plano=visit.plan)
+       
+    if visitForm.validate_on_submit():
+        visitForm.populate_obj(visit)
+
+        try:
+            validate_visit(visit, None)
+        except Exception as error:
+            flash(error)
+            return render_template('visit.html', form=visitForm, plano=visit.plan)
+
         db.session.add(visit)
         db.session.commit()
 
         flash('Consulta foi atualizada com sucesso!')
-        return redirect(url_for("patient.plans", id=visit.plan.patient_id))
+        return redirect(url_for('patient.plans', id=visit.plan.patient_id))
 
     flash('Erro não foi possível atualizar a consulta!')
-    return render_template("visit.html", form=form, plano=visit.plan)
+    return render_template('visit.html', form=visitForm, plano=visit.plan)
 
 
-@bp.route("/<int:id>/delete", methods=("POST",))
+@bp.route('/<int:id>/delete', methods=('POST',))
 def delete(id):
     visit = Visit.query.get(id)
 
     if not visit:
-        # abort(404)
-        return
+        flash('Internal Error')
+        return redirect(url_for('home.home'))
 
     plan = visit.plan
 
     db.session.delete(visit)
     db.session.commit()
     flash('Consulta foi excluída com sucesso!')
-    return redirect(url_for("plan.display", id=plan.id))
+    return redirect(url_for('plan.display', id=plan.id))
 
 
 class VisitForm(FlaskForm):

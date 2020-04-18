@@ -27,6 +27,16 @@ def validate_plan(plan):
             raise Exception('Informe a Forma de Pagamento Adicional!')
 
 
+def validate_visit(visit, plan):
+
+    if plan:
+        for v in plan.visits:
+            if v.date == visit.date:                
+                raise Exception('Já existe consulta registrada na data ' + visit.date.strftime("%d/%m/%Y"))
+
+    if visit.date > plan.expiry_date:
+        raise Exception('Plano explirado! Não é possivel registrar a consulta.')
+
 
 def is_active_plan(plan):
 
