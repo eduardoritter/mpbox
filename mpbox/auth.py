@@ -32,10 +32,10 @@ def login_post():
 
     if user and user.verify_password(password):
         login_user(user)
-        flash('Logged in successfully.')
+        flash('Login efetuado com sucesso.')
         return redirect(url_for('home.home'))
 
-    flash('Credenciais inválidas, verifique e tente novamente.')
+    flash('Credenciais inválidas! Verifique e tente novamente.')
     return redirect(url_for('auth.login'))
 
 
