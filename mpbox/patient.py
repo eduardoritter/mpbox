@@ -1,16 +1,19 @@
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
-from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
 from flask_login import login_required
+from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
+
 from mpbox.extensions import db
 from mpbox.model import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.plan import PlanForm
 from mpbox.validators import is_active_plan, has_active_plan, validate_plan, validate_patient
-from datetime import date
-from dateutil.relativedelta import relativedelta
+from mpbox.config import BASE_URL_PREFIX
 
 
-bp = Blueprint('patient', __name__)
+bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
 
 
 @bp.route('/create', methods=('GET', 'POST'))

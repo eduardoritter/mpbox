@@ -1,16 +1,19 @@
+from datetime import date, time, datetime
+
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
+from flask_login import login_required
 from wtforms import SelectField, TextAreaField, BooleanField, DecimalField, DateField
 from wtforms.validators import DataRequired
-from flask_login import login_required
+
 from mpbox.extensions import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.visit import VisitForm
 from mpbox.validators import validate_plan, validate_visit
-from datetime import date, time, datetime
+from mpbox.config import BASE_URL_PREFIX
 
 
-bp = Blueprint('plan', __name__)
+bp = Blueprint('plan', __name__, url_prefix=BASE_URL_PREFIX + 'plan')
 
 
 @bp.app_template_filter('to_date')

@@ -6,9 +6,10 @@ from wtforms.validators import DataRequired
 from mpbox.extensions import db
 from mpbox.model import Visit, PlanType
 from mpbox.validators import validate_visit
+from mpbox.config import BASE_URL_PREFIX
 
 
-bp = Blueprint('visit', __name__)
+bp = Blueprint('visit', __name__, url_prefix=BASE_URL_PREFIX + 'visit')
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))

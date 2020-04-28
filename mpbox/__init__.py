@@ -2,20 +2,14 @@ import os
 import logging
 
 from flask import Flask
+from mpbox.config import config_app, BASE_URL_PREFIX
 from mpbox.extensions import db, babel, migrate, login_manager
 
 
 def create_app( ):
     app = Flask(__name__)
 
-    app.config.from_mapping(
-        SECRET_KEY="secret",
-        SQLALCHEMY_DATABASE_URI="sqlite:///mpbox.sqlite",
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        BABEL_DEFAULT_LANGUAGE='pt_BR',
-        BABEL_DEFAULT_TIMEZONE='America/Sao_Paulo',
-    )
-
+    config_app(app)
     register_extensions(app)
     register_blueprints(app)
        
@@ -32,25 +26,23 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register blueprints with the Flask application."""
-
-    base = '/mpbox/'
    
     from mpbox import auth
-    app.register_blueprint(auth.bp, url_prefix=base)
+    app.register_blueprint(auth.bp)
 
     from mpbox import home
-    app.register_blueprint(home.bp, url_prefix=base + 'home')
+    app.register_blueprint(home.bp)
 
     from mpbox import patient
-    app.register_blueprint(patient.bp, url_prefix=base + 'patient')
+    app.register_blueprint(patient.bp)
 
     from mpbox import plan
-    app.register_blueprint(plan.bp, url_prefix=base + 'plan')
+    app.register_blueprint(plan.bp)
 
     from mpbox import visit
-    app.register_blueprint(visit.bp, url_prefix=base + 'visit')
+    app.register_blueprint(visit.bp)
 
-    app.add_url_rule(base, endpoint='home.home')
+    app.add_url_rule(BASE_URL_PREFIX, endpoint='home.home')
 
 
 if __name__ == "__main__":
