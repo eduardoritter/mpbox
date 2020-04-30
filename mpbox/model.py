@@ -103,6 +103,8 @@ class Visit(db.Model):
     sequence_number = Column(Integer, nullable=False)
     date = Column(Date)
     time = Column(Time)
+    note = Column(Text)
+    no_show = Column(Boolean, default=False)
     created = Column(DateTime, default=datetime.utcnow)
 
 

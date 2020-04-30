@@ -16,11 +16,11 @@
 <div class="row justify-content-center">
     <div class="col-md-4">
         <label for="firstName">Paciente</label>
-        <input type="text" class="form-control" id="name" placeholder="" value="{{ plano.patient.name }}" readonly>
+        <input type="text" class="form-control" id="name" placeholder="" value="{{ plan.patient.name }}" readonly>
     </div>
     <div class="col-md-4">
         <label for="lastName">Plano</label>
-        <input type="text" class="form-control" id="planType" placeholder="" value="{{ plano.plan_type }}" readonly>
+        <input type="text" class="form-control" id="planType" placeholder="" value="{{ plan.plan_type }}" readonly>
     </div>
 </div>
 
@@ -42,6 +42,20 @@
             {{ form.time(class_="form-control") }}
         </div>
     </div>
+    <div class="row justify-content-center">
+        <div class="form-group col-md-2 offset-md-2" style="display: flex; justify-content: center; align-items: center;">
+            <div class="custom-control custom-checkbox">
+                {{ form.no_show(class_="custom-control-input", readonly=readonly) }}    
+                {{ form.no_show.label(class_="custom-control-label") }}                            
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="form-group col-md-8">
+            {{ form.note.label }}
+            {{ form.note(class_="form-control") }}
+        </div>
+    </div>
 
     <div class="col-md-8 offset-md-2">
         <button class="btn btn-info btn-lg btn-block" type="submit">Salvar</button>
@@ -51,7 +65,7 @@
 <hr class="mb-4" />
 
 <div class="col-md-8 offset-md-2">
-    <a href="{{ url_for('patient.plans', id=plano.patient.id ) }}" title="Voltar">
+    <a href="{{ url_for('patient.plans', id=plan.patient.id ) }}" title="Voltar">
         <button type="button" class="btn btn-outline-info btn-md btn-block">Voltar</button>
     </a>
 </div>

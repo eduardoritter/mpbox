@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
-from wtforms import DateField, TimeField, SelectField
+from wtforms import DateField, TimeField, SelectField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
@@ -24,16 +24,18 @@ def update(id):
     visitForm = VisitForm(obj=visit)
 
     if request.method == 'GET':        
-        return render_template('visit.html', form=visitForm, plano=visit.plan)
+        return render_template('visit.html', form=visitForm, plan=visit.plan)
        
     if visitForm.validate_on_submit():
         visitForm.populate_obj(visit)
 
+        """
         try:
             validate_visit(visit, None)
         except Exception as error:
             flash(error)
-            return render_template('visit.html', form=visitForm, plano=visit.plan)
+            return render_template('visit.html', form=visitForm, plan=visit.plan)
+        """
 
         db.session.add(visit)
         db.session.commit()
@@ -42,7 +44,7 @@ def update(id):
         return redirect(url_for('patient.plans', id=visit.plan.patient_id))
 
     flash('Erro não foi possível atualizar a consulta!')
-    return render_template('visit.html', form=visitForm, plano=visit.plan)
+    return render_template('visit.html', form=visitForm, plan=visit.plan)
 
 
 @bp.route('/<int:id>/delete', methods=('POST',))
@@ -65,3 +67,5 @@ class VisitForm(FlaskForm):
     sequence_number = SelectField('Consulta', choices=[(1, 'Primeira'), (2, 'Segunda'), (3, 'Terceira'), (4, 'Quarta')], coerce=int)
     date = DateField('Data', format='%d/%m/%Y', validators=[DataRequired()])
     time = TimeField('Hora', validators=[DataRequired()])
+    no_show = BooleanField('Não Compareceu')
+    note = TextAreaField('Notas')

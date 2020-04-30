@@ -108,7 +108,7 @@ def visit(id):
         visit.time = datetime.time(datetime.now())
         visit.sequence_number = len(plan.visits) + 1
         visitForm = VisitForm(obj=visit)
-        return render_template('visit.html', form=visitForm, plano=plan)
+        return render_template('visit.html', form=visitForm, plan=plan)
         
     if visitForm.validate_on_submit():        
         visitForm.populate_obj(visit)
@@ -117,7 +117,7 @@ def visit(id):
             validate_visit(visit, plan)
         except Exception as error:
             flash(error)
-            return render_template('visit.html', form=visitForm, plano=plan)
+            return render_template('visit.html', form=visitForm, plan=plan)
         
         visit.plan = plan
 
@@ -127,7 +127,7 @@ def visit(id):
         return redirect(url_for('patient.plans', id=plan.patient_id))
 
     flash('Erro não foi possível registrar consulta!')   
-    return render_template('visit.html', form=visitForm, plano=plan)
+    return render_template('visit.html', form=visitForm, plan=plan)
 
 
 class PlanForm(FlaskForm):
