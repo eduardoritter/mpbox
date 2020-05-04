@@ -6,18 +6,24 @@ import unittest
 
 class MPBoxTest(unittest.TestCase):
 
-    def test_new_visit(self):
-        v = Visit()
-        v.date = date(2020, 6, 10)
-        p = Plan()
-        p.expiry_date = date(2020, 12, 10)
+    def test_visit_date(self):
+        v = Visit(date=date(2020, 6, 10))
+        p = Plan(expiry_date=date(2020, 12, 10))
 
         try:
             validate_visit(v, p)
-        except Exception as error:
+        except Exception:
             self.fail()
+        
+        pass
 
-        self.assertTrue(True)
+    def test_visit_expired_plan(self):
+        v = Visit(date=date(2020, 12, 11))
+        p = Plan(expiry_date = date(2020, 12, 10))
+
+        with self.assertRaises(Exception):
+            validate_visit(v, p)
+
 
     def setUp(self):
         app = create_app().test_client()
