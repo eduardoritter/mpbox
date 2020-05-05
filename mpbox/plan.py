@@ -1,4 +1,5 @@
-from datetime import date, time, datetime
+from datetime import datetime
+import pytz
 
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
@@ -9,7 +10,7 @@ from wtforms.validators import DataRequired
 from mpbox.extensions import db
 from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.visit import VisitForm
-from mpbox.validators import validate_plan, validate_visit
+from mpbox.validators import validate_plan, validate_new_visit, ValidationError
 from mpbox.config import BASE_URL_PREFIX
 
 
@@ -22,8 +23,9 @@ def format_date(date):
 
 
 @bp.app_template_filter('to_time')
-def format_date(time):
+def format_time(time):
     return time.strftime('%H:%M')
+
 
 @bp.app_template_filter('to_visit_sequence')
 def visit_sequence(sequence):
@@ -103,27 +105,29 @@ def visit(id):
     visit = Visit()
     visitForm = VisitForm()
 
-    if request.method == 'GET':        
-        visit.date = date.today()
-        visit.time = datetime.time(datetime.now())
+    if request.method == 'GET':
+        tz = pytz.timezone('America/Sao_Paulo')
+        now = datetime.now(tz=tz)
+        visit.date = now.date()
+        visit.time = now.time()
         visit.sequence_number = len(plan.visits) + 1
         visitForm = VisitForm(obj=visit)
         return render_template('visit.html', form=visitForm, plan=plan)
         
     if visitForm.validate_on_submit():        
         visitForm.populate_obj(visit)
+
+        visit.plan = plan
         
         try:
-            validate_visit(visit, plan)
-        except Exception as error:
+            validate_new_visit(visit)
+        except ValidationError as error:
             flash(error)
             return render_template('visit.html', form=visitForm, plan=plan)
         
-        visit.plan = plan
-
         db.session.add(visit)
         db.session.commit()
-        flash('Consulta registrada con sucesso!')
+        flash('Consulta registrada com sucesso!')
         return redirect(url_for('patient.plans', id=plan.patient_id))
 
     flash('Erro não foi possível registrar consulta!')   
