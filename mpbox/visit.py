@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
 from mpbox.model import Visit, PlanType
-from mpbox.validators import validate_visit
+from mpbox.validators import validate_visit, ValidationError
 from mpbox.config import BASE_URL_PREFIX
 
 
@@ -29,13 +29,11 @@ def update(id):
     if visitForm.validate_on_submit():
         visitForm.populate_obj(visit)
 
-        """
         try:
-            validate_visit(visit, None)
-        except Exception as error:
+            validate_visit(visit)
+        except ValidationError as error:
             flash(error)
             return render_template('visit.html', form=visitForm, plan=visit.plan)
-        """
 
         db.session.add(visit)
         db.session.commit()

@@ -116,14 +116,14 @@ def visit(id):
         
     if visitForm.validate_on_submit():        
         visitForm.populate_obj(visit)
-
-        visit.plan = plan
         
         try:
-            validate_new_visit(visit)
+            validate_new_visit(visit, plan)
         except ValidationError as error:
             flash(error)
             return render_template('visit.html', form=visitForm, plan=plan)
+
+        visit.plan = plan
         
         db.session.add(visit)
         db.session.commit()
