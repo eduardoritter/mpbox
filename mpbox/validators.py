@@ -46,14 +46,14 @@ def validate_new_visit(visit, plan):
 def validate_visit(visit, plan=None):
     now = datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
 
+    if visit.date > now.date():
+        raise ValidationError('Não é possivel registrar consulta no futuro!')
+
     if plan:
         expiry_date = plan.expiry_date
     else:
         expiry_date = visit.plan.expiry_date
-
-    if visit.date > now.date():
-        raise ValidationError('Não é possivel registrar consulta no futuro!')
-
+    
     if visit.date > expiry_date:
         raise ValidationError('Plano expirado! Não é possivel registrar a consulta.')
 
