@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+
+<nav class="navbar navbar-light bg-light">
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item active">
+      <a href="{{ url_for('patient.create') }}" title="Novo Paciente">
+        <button class="btn btn-info">
+          Adicionar Paciente
+          <svg class="bi bi-person-plus-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 100-6 3 3 0 000 6zm7.5-3a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z"
+              clip-rule="evenodd" />
+            <path fill-rule="evenodd" d="M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+      </a>
+    </li>
+  </ul>
+  <form class="form-inline" action="{{ url_for('home.search')}}" method="get">
+    <input class="form-control mr-sm-2" name="name" id="name" type="search" placeholder="Pesquisar paciente"
+      aria-label="Search">
+    <button class="btn btn-info" type="submit">
+      <svg class="bi bi-search" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+          d="M10.442 10.442a1 1 0 011.415 0l3.85 3.85a1 1 0 01-1.414 1.415l-3.85-3.85a1 1 0 010-1.415z"
+          clip-rule="evenodd" />
+        <path fill-rule="evenodd"
+          d="M6.5 12a5.5 5.5 0 100-11 5.5 5.5 0 000 11zM13 6.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
+  </form>
+</nav>
+
+{% if last_plans %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col" style="width:5%">#</th>
+      <th scope="col" style="width:65%">Últimos Planos/th>
+      <th scope="col" style="width:15%">
+        <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd"
+            d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"
+            clip-rule="evenodd" />
+          <path fill-rule="evenodd"
+            d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z"
+            clip-rule="evenodd" />
+        </svg>
+      </th>
+      <th scope="col" style="width:15%">
+        <svg class="bi bi-clock" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M8 15A7 7 0 108 1a7 7 0 000 14zm8-7A8 8 0 110 8a8 8 0 0116 0z"
+            clip-rule="evenodd" />
+          <path fill-rule="evenodd"
+            d="M7.5 3a.5.5 0 01.5.5v5.21l3.248 1.856a.5.5 0 01-.496.868l-3.5-2A.5.5 0 017 9V3.5a.5.5 0 01.5-.5z"
+            clip-rule="evenodd" />
+        </svg>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in last_plans %}
+    <tr>
+      <th scope="row">{{ p.id }}</th>
+      <td><a href="{{ url_for('patient.plans', id=p.patient['id']) }}" title="{{ p.patient.name }}">{{ p.patient.name }}</a></td>
+      <td>{{ p.payment_type }}</td>
+      <td>{{ p.payment_type }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

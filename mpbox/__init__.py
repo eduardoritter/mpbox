@@ -30,6 +30,9 @@ def register_blueprints(app):
     from mpbox import auth
     app.register_blueprint(auth.bp)
 
+    from mpbox import dashboard
+    app.register_blueprint(dashboard.bp)
+
     from mpbox import home
     app.register_blueprint(home.bp)
 
