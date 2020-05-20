@@ -44,7 +44,7 @@
   <thead>
     <tr>
       <th scope="col" style="width:5%">#</th>
-      <th scope="col" style="width:65%">Últimos Planos/th>
+      <th scope="col" style="width:65%">Últimos Planos</th>
       <th scope="col" style="width:15%">
         <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
           xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +73,7 @@
     <tr>
       <th scope="row">{{ p.id }}</th>
       <td><a href="{{ url_for('patient.plans', id=p.patient['id']) }}" title="{{ p.patient.name }}">{{ p.patient.name }}</a></td>
-      <td>{{ p.payment_type }}</td>
+      <td>{{ p.plan_type }}</td>
       <td>{{ p.payment_type }}</td>
     </tr>
     {% endfor %}
