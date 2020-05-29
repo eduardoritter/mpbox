@@ -5,15 +5,21 @@ from flask import Blueprint, render_template, request, redirect, request, url_fo
 from flask_wtf import FlaskForm, Form
 from flask_login import login_required
 from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
+from sqlalchemy.sql import exists
 
 from mpbox.extensions import db
 from mpbox.model import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.plan import PlanForm
-from mpbox.validators import is_active_plan, has_active_plan, validate_plan, validate_patient
+from mpbox.validators import is_active_plan, has_active_plan, validate_plan, validate_patient, ValidationError
 from mpbox.config import BASE_URL_PREFIX
 
 
 bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
+
+
+def patient_exist(patient):
+    if db.session.query(exists().where(Patient.cpf == patient.cpf)).scalar():
+        raise ValidationError('Paciente ' + patient.name + ' já registrado!')
 
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -31,7 +37,8 @@ def create():
 
         try:
             validate_patient(patient)
-        except Exception as error:
+            patient_exist(patient)
+        except ValidationError as error:
             flash(error)
             return render_template('patient.html', form=form)           
           

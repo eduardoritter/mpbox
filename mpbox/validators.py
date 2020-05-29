@@ -1,7 +1,6 @@
 import pytz
 from datetime import datetime
 from validate_docbr import CPF
-from sqlalchemy import inspect
 
 from mpbox.model import PlanType, AdditionalPaymentType, PaymentType
 
@@ -14,7 +13,7 @@ def validate_patient(patient):
     cpf = CPF()
 
     if not cpf.validate(patient.cpf):
-        raise Exception('CPF inválido!')
+        raise ValidationError('CPF inválido!')
 
 
 def validate_plan(plan):

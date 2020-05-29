@@ -2,9 +2,14 @@
 
 {% block jscript %}
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#visit_date').mask('00/00/0000');
+  $(document).ready(function () {
+    $('#visit_date').mask('00/00/0000');
+    $('#visit_date').datepicker({
+      format: "dd/mm/yyyy",
+      language: "pt-BR",
+      todayHighlight: true
     });
+  });
 </script>
 {% endblock %}
 
@@ -15,6 +20,7 @@
 <nav class="navbar navbar-light bg-light">
   <ul class="navbar-nav mr-auto">
     <li class="nav-item active">
+
     </li>
   </ul>
   <form class="form-inline" action="{{ url_for('dashboard.search')}}" method="get">
@@ -33,6 +39,8 @@
     </button>
   </form>
 </nav>
+
+
 
 {% if last_plans %}
 <table class="table table-striped">
@@ -63,12 +71,13 @@
       </th>
     </tr>
   </thead>
-  
+
   <tbody>
     {% for p in last_plans %}
     <tr>
       <th scope="row">{{ p.id }}</th>
-      <td><a href="{{ url_for('patient.plans', id=p.patient['id']) }}" title="{{ p.patient.name }}">{{ p.patient.name }}</a></td>
+      <td><a href="{{ url_for('patient.plans', id=p.patient['id']) }}"
+          title="{{ p.patient.name }}">{{ p.patient.name }}</a></td>
       <td>{{ p.plan_type }}</td>
       <td>{{ p.payment_type }}</td>
     </tr>
@@ -111,7 +120,8 @@
     {% for v in visits %}
     <tr>
       <th scope="row">{{ v.id }}</th>
-      <td><a href="{{ url_for('patient.plans', id=v.plan.patient['id']) }}" title="{{ v.plan.patient.name }}">{{ v.plan.patient.name }}</a></td>
+      <td><a href="{{ url_for('patient.plans', id=v.plan.patient['id']) }}"
+          title="{{ v.plan.patient.name }}">{{ v.plan.patient.name }}</a></td>
       <td>{{ v.date|to_date }}</td>
       <td>{{ v.time|to_time }}</td>
     </tr>

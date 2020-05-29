@@ -5,6 +5,11 @@
     $(document).ready(function () {
         $('#date').mask('00/00/0000');
         $('#time').mask('00:00');
+        $('#date').datepicker({
+            format: "dd/mm/yyyy",
+            language: "pt-BR",
+            todayHighlight: true
+        });
     });
 </script>
 {% endblock %}
@@ -43,10 +48,11 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div class="form-group col-md-2 offset-md-2" style="display: flex; justify-content: center; align-items: center;">
+        <div class="form-group col-md-2 offset-md-2"
+            style="display: flex; justify-content: center; align-items: center;">
             <div class="custom-control custom-checkbox">
-                {{ form.no_show(class_="custom-control-input", readonly=readonly) }}    
-                {{ form.no_show.label(class_="custom-control-label") }}                            
+                {{ form.no_show(class_="custom-control-input", readonly=readonly) }}
+                {{ form.no_show.label(class_="custom-control-label") }}
             </div>
         </div>
     </div>

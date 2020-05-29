@@ -5,6 +5,11 @@
     $(document).ready(function () {
         $('#cpf').mask('000.000.000-00', { reverse: true });
         $('#birthdate').mask('00/00/0000');
+        $('#birthdate').datepicker({
+            format: "dd/mm/yyyy",
+            language: "pt-BR",
+            todayHighlight: true
+        });
     });
 </script>
 {% endblock %}
