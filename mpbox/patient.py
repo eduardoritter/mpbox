@@ -79,10 +79,19 @@ def update(id):
     return render_template('patient.html', form=form)
 
 
-@bp.route('/<int:id>/delete', methods=('POST',))
+@bp.route('/<int:id>/delete', methods=('GET',))
 @login_required
 def delete(id):
-    return 'Delete Patient' + str(id)
+    patient = Patient.query.get(id)
+
+    if (len( patient.plans ) > 0):
+        flash('Não foi possivel excluir o paciente, Existe plano vinculado ao paciente!')
+        return redirect(url_for('home.home'))
+    
+    db.session.delete(patient)
+    db.session.commit()
+    flash('Paciente foi excluido com sucesso!')
+    return redirect(url_for('home.home'))
 
 
 @bp.route('/<int:id>/plans', methods=('GET', 'POST'))
