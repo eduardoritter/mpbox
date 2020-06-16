@@ -10,7 +10,8 @@ from sqlalchemy.sql import exists
 from mpbox.extensions import db
 from mpbox.model import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.plan import PlanForm
-from mpbox.validators import is_active_plan, has_active_plan, validate_plan, validate_patient, ValidationError
+from mpbox.validators import validate_plan, validate_patient, ValidationError
+from mpbox.helpers import classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 
 
@@ -99,19 +100,10 @@ def delete(id):
 def plans(id):
     
     patient = Patient.query.get(id)
-    plans = patient.plans
-
-    activePlans = []
-    oldPlans =[]
-
-    for p in plans:
-        if is_active_plan(p):
-            activePlans.append(p)
-        else:
-            oldPlans.append(p)
+    active_plans, old_plans = classify_plans(patient.plans)
 
     return render_template('patient_plans.html', patient=patient, 
-                            activePlans=activePlans, oldPlans=oldPlans)
+                            activePlans=active_plans, oldPlans=old_plans)
 
 
 @bp.route('/<int:id>/create_plan', methods=('GET', 'POST'))
@@ -119,8 +111,7 @@ def plans(id):
 def create_plan(id):
     patient = Patient.query.get(id)
     expiry = date.today() + relativedelta(months=6)
-    planForm = PlanForm(additional_value=0.00, paid=True, 
-                        expiry_date=date.today() + relativedelta(months=6))
+    planForm = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
 
     if request.method == 'GET': 
         return render_template('plan.html', patient=patient, 

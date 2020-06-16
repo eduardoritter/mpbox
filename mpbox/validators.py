@@ -55,34 +55,3 @@ def validate_visit(visit, plan=None):
     
     if visit.date > expiry_date:
         raise ValidationError('Plano expirado! Não é possivel registrar a consulta.')
-
-
-def is_active_plan(plan):
-
-    if (plan.plan_type == PlanType.P2 and
-            len(plan.visits) < 2):
-        return True
-
-    if (plan.plan_type == PlanType.P4 and
-            len(plan.visits) < 4):
-        return True
-    
-    if (plan.plan_type == PlanType.IN and
-            len(plan.visits) < 1):
-        return True
-
-    if (plan.plan_type == PlanType.AV and
-            len(plan.visits) < 1):
-        return True
-    
-    return False
-
-
-def has_active_plan(plans):
-   
-    for plan in plans:
-        if is_active_plan(plan):
-            return True
-    
-    return False
-
