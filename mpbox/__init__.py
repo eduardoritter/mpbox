@@ -26,24 +26,13 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register blueprints with the Flask application."""
-   
-    from mpbox import auth
-    app.register_blueprint(auth.bp)
+    import mpbox.controllers as controllers
 
-    from mpbox import dashboard
-    app.register_blueprint(dashboard.bp)
+    blueprints = controllers.default_blueprints
 
-    from mpbox import home
-    app.register_blueprint(home.bp)
-
-    from mpbox import patient
-    app.register_blueprint(patient.bp)
-
-    from mpbox import plan
-    app.register_blueprint(plan.bp)
-
-    from mpbox import visit
-    app.register_blueprint(visit.bp)
+    if blueprints:
+        for blueprint in blueprints:
+            app.register_blueprint(blueprint)
 
     app.add_url_rule(BASE_URL_PREFIX, endpoint='home.home')
 

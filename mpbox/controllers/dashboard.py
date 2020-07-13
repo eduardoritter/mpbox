@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
-from mpbox.model import Plan, Visit
+from mpbox.models.model import Plan, Visit
 from mpbox.config import BASE_URL_PREFIX
 
 
@@ -30,6 +30,7 @@ def search():
 
 
 @bp.route('/unpaid')
+@login_required
 def pending_plans():
     unpaid_plans = Plan.query.filter(Plan.paid == False)
     return render_template('dashboard.html', last_plans=unpaid_plans)

@@ -2,7 +2,7 @@ import pytz
 from datetime import datetime
 from validate_docbr import CPF
 
-from mpbox.model import PlanType, AdditionalPaymentType, PaymentType
+from mpbox.models.model import PlanType, AdditionalPaymentType, PaymentType
 
 
 class ValidationError(Exception):

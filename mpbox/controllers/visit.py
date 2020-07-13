@@ -4,8 +4,8 @@ from wtforms import DateField, TimeField, SelectField, TextAreaField, BooleanFie
 from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
-from mpbox.model import Visit, PlanType
-from mpbox.validators import validate_visit, ValidationError
+from mpbox.models.model import Visit, PlanType
+from mpbox.utils import validate_visit, ValidationError
 from mpbox.config import BASE_URL_PREFIX
 
 

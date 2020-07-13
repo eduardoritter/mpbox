@@ -8,10 +8,9 @@ from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanF
 from sqlalchemy.sql import exists
 
 from mpbox.extensions import db
-from mpbox.model import Patient, Visit, Plan, AdditionalPaymentType
-from mpbox.plan import PlanForm
-from mpbox.validators import validate_plan, validate_patient, ValidationError
-from mpbox.helpers import classify_plans, is_active_plan, has_active_plan
+from mpbox.models.model import Patient, Visit, Plan, AdditionalPaymentType
+from .plan import PlanForm
+from mpbox.utils import validate_plan, validate_patient, ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 
 

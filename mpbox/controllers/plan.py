@@ -8,9 +8,9 @@ from wtforms import SelectField, TextAreaField, BooleanField, DecimalField, Date
 from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
-from mpbox.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
-from mpbox.visit import VisitForm
-from mpbox.validators import validate_plan, validate_new_visit, ValidationError
+from mpbox.models.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
+from .visit import VisitForm
+from mpbox.utils import validate_plan, validate_new_visit, ValidationError 
 from mpbox.config import BASE_URL_PREFIX
 
 
@@ -133,6 +133,14 @@ def visit(id):
     flash('Erro não foi possível registrar consulta!')   
     return render_template('visit.html', form=visitForm, plan=plan)
 
+
+@bp.route('json/<int:id>')
+def display_json(id):
+    
+    if request.is_json:
+        return request.get_json()
+    
+    return 'OI'
 
 class PlanForm(FlaskForm):
     plan_type = SelectField('Plano', choices=PlanType.choices())

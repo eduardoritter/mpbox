@@ -20,7 +20,7 @@
 <nav class="navbar navbar-light bg-light">
   <ul class="navbar-nav mr-auto">
     <li class="nav-item active">
-
+      <a class="nav-link" href="{{ url_for('dashboard.pending_plans')}}">Pagamentos Pedentes</a>
     </li>
   </ul>
   <form class="form-inline" action="{{ url_for('dashboard.search')}}" method="get">
@@ -39,8 +39,6 @@
     </button>
   </form>
 </nav>
-
-
 
 {% if last_plans %}
 <table class="table table-striped">

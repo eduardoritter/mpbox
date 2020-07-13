@@ -1,4 +1,4 @@
-from mpbox.model import PlanType
+from mpbox.models.model import PlanType
 
 
 def is_active_plan(plan):
