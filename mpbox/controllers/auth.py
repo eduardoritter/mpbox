@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import LoginManager, login_user, logout_user, login_required
 
-from mpbox.models.model import User
+from mpbox.models import User
 from mpbox.extensions import db, login_manager
 from mpbox.config import BASE_URL_PREFIX
 

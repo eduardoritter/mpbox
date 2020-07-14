@@ -8,7 +8,7 @@ from wtforms import SelectField, TextAreaField, BooleanField, DecimalField, Date
 from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
-from mpbox.models.model import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
+from mpbox.models import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from .visit import VisitForm
 from mpbox.utils import validate_plan, validate_new_visit, ValidationError 
 from mpbox.config import BASE_URL_PREFIX

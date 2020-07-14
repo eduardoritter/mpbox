@@ -1,7 +1,7 @@
 from datetime import date
 from mpbox import create_app
-from mpbox.validators import validate_visit, validate_new_visit, ValidationError
-from mpbox.model import Visit, Plan, PlanType
+from mpbox.utils import validate_visit, validate_new_visit, ValidationError
+from mpbox.models import Visit, Plan, PlanType
 import unittest
 
 class MPBoxTest(unittest.TestCase):

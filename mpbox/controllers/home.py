@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
-from mpbox.models.model import Patient, Visit
+from mpbox.models import Patient, Visit
 from mpbox.config import BASE_URL_PREFIX
 
 
