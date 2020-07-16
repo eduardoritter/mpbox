@@ -4,14 +4,14 @@ from dateutil.relativedelta import relativedelta
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
 from flask_login import login_required
-from wtforms import SelectField, TextField, StringField, TextAreaField, BooleanField, DecimalField, DateField, validators
+
 from sqlalchemy.sql import exists
 
 from mpbox.extensions import db
 from mpbox.models import Patient, Visit, Plan, AdditionalPaymentType
-from .plan import PlanForm
 from mpbox.utils import validate_plan, validate_patient, ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
+from .forms import PatientForm, PlanForm
 
 
 bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
@@ -145,11 +145,3 @@ def create_plan(id):
     flash('Erro: Plano não cadastrado!')
     return render_template('plan.html', patient=patient, plans=plans, 
                            form=planForm, readonly=False)
-
-
-class PatientForm(FlaskForm):
-    name = StringField('Nome', validators=[validators.required()])
-    cpf = StringField('CPF', validators=[validators.required()])
-    email = StringField('Email', validators=[validators.Email(), validators.required()])
-    birthdate = DateField('Data de Nascimento', format='%d/%m/%Y', validators=[validators.required()])
-    note = TextAreaField('Notas')

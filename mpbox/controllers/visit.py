@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
-from wtforms import DateField, TimeField, SelectField, TextAreaField, BooleanField
-from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
 from mpbox.models import Visit, PlanType
 from mpbox.utils import validate_visit, ValidationError
 from mpbox.config import BASE_URL_PREFIX
+from .forms import VisitForm
 
 
 bp = Blueprint('visit', __name__, url_prefix=BASE_URL_PREFIX + 'visit')
@@ -59,11 +58,3 @@ def delete(id):
     db.session.commit()
     flash('Consulta foi excluída com sucesso!')
     return redirect(url_for('plan.display', id=plan.id))
-
-
-class VisitForm(FlaskForm):
-    sequence_number = SelectField('Consulta', choices=[(1, 'Primeira'), (2, 'Segunda'), (3, 'Terceira'), (4, 'Quarta')], coerce=int)
-    date = DateField('Data', format='%d/%m/%Y', validators=[DataRequired()])
-    time = TimeField('Hora', validators=[DataRequired()])
-    no_show = BooleanField('Não Compareceu')
-    note = TextAreaField('Notas')

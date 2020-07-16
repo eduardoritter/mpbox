@@ -2,17 +2,13 @@ from datetime import datetime
 import pytz
 
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
-from flask_wtf import FlaskForm, Form
 from flask_login import login_required
-from wtforms import SelectField, TextAreaField, BooleanField, DecimalField, DateField
-from wtforms.validators import DataRequired
 
 from mpbox.extensions import db
 from mpbox.models import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
-from .visit import VisitForm
 from mpbox.utils import validate_plan, validate_new_visit, ValidationError 
 from mpbox.config import BASE_URL_PREFIX
-
+from .forms import PlanForm, VisitForm
 
 bp = Blueprint('plan', __name__, url_prefix=BASE_URL_PREFIX + 'plan')
 
@@ -142,14 +138,3 @@ def display_json(id):
     
     return 'OI'
 
-class PlanForm(FlaskForm):
-    plan_type = SelectField('Plano', choices=PlanType.choices())
-    payment_type = SelectField('Forma de Pagamento', choices=PaymentType.choices())
-    value = DecimalField('Valor')
-    additional_payment_type = SelectField('Forma de Pagamento Adicional', choices=AdditionalPaymentType.choices())
-    additional_value = DecimalField('Valor Adicional')
-    total_amount = DecimalField('Total')
-    receipt = BooleanField('Recibo')
-    paid = BooleanField('Pago')
-    expiry_date = DateField('Validade', format='%d/%m/%Y', validators=[DataRequired()])
-    note = TextAreaField('Notas')
