@@ -1,5 +1,5 @@
-from .models import Patient
-from .core import Service
+from mpbox.models import Patient
+from mpbox.core import Service
 
 class PatientService(Service):
     __model__ = Patient

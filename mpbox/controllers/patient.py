@@ -12,7 +12,7 @@ from mpbox.models import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.utils import validate_plan, validate_patient, ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
-from ..services import PatientService
+from mpbox.services import patients
 
 
 bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
@@ -42,9 +42,8 @@ def create():
         except ValidationError as error:
             flash(error)
             return render_template('patient.html', form=form)
-
-        patient_service = PatientService()
-        patient_service.save(patient)
+         
+        patients.save(patient)
 
         flash('Paciente foi adicionado !')
         return redirect(url_for('patient.plans', id=patient.id))
@@ -55,7 +54,7 @@ def create():
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    patient = Patient.query.get(id)
+    patient = patients.get(id)
     form = PatientForm(obj=patient)
 
     if request.method == 'GET':
@@ -71,8 +70,7 @@ def update(id):
             flash(error)
             return render_template('patient.html', form=form) 
 
-        db.session.add(patient)
-        db.session.commit()
+        patients.save(patient)
 
         flash('Paciente foi atualizado !')
         return redirect(url_for('home.home'))
@@ -83,14 +81,13 @@ def update(id):
 @bp.route('/<int:id>/delete', methods=('GET',))
 @login_required
 def delete(id):
-    patient = Patient.query.get(id)
+    patient = patients.get(id)
 
     if (len( patient.plans ) > 0):
         flash('Não foi possivel excluir o paciente, Existe plano vinculado ao paciente!')
         return redirect(url_for('home.home'))
-    
-    db.session.delete(patient)
-    db.session.commit()
+
+    patients.delete(patient)
     flash('Paciente foi excluido com sucesso!')
     return redirect(url_for('home.home'))
 
@@ -99,7 +96,7 @@ def delete(id):
 @login_required
 def plans(id):
     
-    patient = Patient.query.get(id)
+    patient = patients.get(id)
     active_plans, old_plans = classify_plans(patient.plans)
 
     return render_template('patient_plans.html', patient=patient, 
@@ -109,7 +106,7 @@ def plans(id):
 @bp.route('/<int:id>/create_plan', methods=('GET', 'POST'))
 @login_required
 def create_plan(id):
-    patient = Patient.query.get(id)
+    patient = patients.get(id)
     expiry = date.today() + relativedelta(months=6)
     planForm = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
 
