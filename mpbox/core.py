@@ -37,11 +37,29 @@ class Service(object):
         """Returns a generator containing all instances of the service's model.
         """
         return self.__model__.query.all()
-
-    def delete(self, model):
-        """Immediately deletes the specified model instance.
-        :param model: the model instance to delete
+    
+    def new(self, **kwargs):
+        """Returns a new, unsaved instance of the service's model class.
         """
-        self._isinstance(model)
-        db.session.delete(model)
-        db.session.commit()
+        return self.__model__(**kwargs)
+
+    def create(self, **kwargs):
+        """Returns a new, saved instance of the service's model class.
+        :param **kwargs: instance parameters
+        """
+        return self.save(self.new(**kwargs))
+    
+    def find(self, **kwargs):
+        """Returns a list of instances of the service's model filtered by the
+        specified key word arguments.
+        :param **kwargs: filter parameters
+        """
+        return self.__model__.query.filter_by(**kwargs)
+
+    def first(self, **kwargs):
+        """Returns the first instance found of the service's model filtered by
+        the specified key word arguments.
+        :param **kwargs: filter parameters
+        """
+        return self.find(**kwargs).first()
+
