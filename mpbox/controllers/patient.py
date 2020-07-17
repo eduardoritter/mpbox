@@ -12,6 +12,7 @@ from mpbox.models import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.utils import validate_plan, validate_patient, ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
+from ..services import PatientService
 
 
 bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
@@ -40,10 +41,10 @@ def create():
             patient_exist(patient)
         except ValidationError as error:
             flash(error)
-            return render_template('patient.html', form=form)           
-          
-        db.session.add(patient)
-        db.session.commit()
+            return render_template('patient.html', form=form)
+
+        patient_service = PatientService()
+        patient_service.save(patient)
 
         flash('Paciente foi adicionado !')
         return redirect(url_for('patient.plans', id=patient.id))
