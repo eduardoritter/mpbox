@@ -4,11 +4,11 @@ import pytz
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
-from mpbox.extensions import db
-from mpbox.models import Patient, Plan, Visit, PaymentType, PlanType, AdditionalPaymentType
 from mpbox.utils import validate_plan, validate_new_visit, ValidationError 
 from mpbox.config import BASE_URL_PREFIX
+from mpbox.services import plans, visits
 from .forms import PlanForm, VisitForm
+
 
 bp = Blueprint('plan', __name__, url_prefix=BASE_URL_PREFIX + 'plan')
 
@@ -39,7 +39,7 @@ def visit_sequence(sequence):
 @bp.route('/<int:id>')
 @login_required
 def display(id):
-    plan = Plan.query.get(id)
+    plan = plans.get(id)
     planForm = PlanForm(obj=plan)
     return render_template('plan.html', form=planForm, visits=plan.visits, patient=plan.patient, readonly=True )
 
@@ -47,7 +47,7 @@ def display(id):
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    plan = Plan.query.get(id)
+    plan = plans.get(id)
     planForm = PlanForm(obj=plan)
 
     if request.method == 'GET':        
@@ -63,8 +63,7 @@ def update(id):
             flash(error)
             return render_template('plan.html', form=planForm, patient=plan.patient, readonly=False)
 
-        db.session.add(plan)
-        db.session.commit()
+        plans.save(plan)
 
         flash('Plano foi atualizado com sucesso!')
         return redirect(url_for('patient.plans', id=plan.patient_id))
@@ -75,7 +74,7 @@ def update(id):
 
 @bp.route('/<int:id>/delete', methods=('GET',))
 def delete(id):
-    plan = Plan.query.get(id)
+    plan = plans.get(id)
 
     if not plan:
         # abort(404)
@@ -87,8 +86,8 @@ def delete(id):
         flash('Não foi possivel excluir o plano, Existe consulta vinculada ao plano!')
         return redirect(url_for('patient.plans', id=patient.id))
 
-    db.session.delete(plan)
-    db.session.commit()
+    plans.save(delete)
+
     flash('Plano foi excluido com sucesso!')
 
     return redirect(url_for('patient.plans', id=patient.id))
@@ -96,9 +95,9 @@ def delete(id):
 
 @bp.route('/<int:id>/visit', methods=('GET', 'POST'))
 def visit(id):
-    plan = Plan.query.get(id)
+    plan = plans.get(id)
 
-    visit = Visit()
+    visit = visits.new()
     visitForm = VisitForm()
 
     if request.method == 'GET':
@@ -120,9 +119,9 @@ def visit(id):
             return render_template('visit.html', form=visitForm, plan=plan)
 
         visit.plan = plan
+
+        visits.save(visit)
         
-        db.session.add(visit)
-        db.session.commit()
         flash('Consulta registrada com sucesso!')
         return redirect(url_for('patient.plans', id=plan.patient_id))
 
