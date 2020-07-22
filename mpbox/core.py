@@ -24,6 +24,13 @@ class Service(object):
         """
         return self.__model__.query.get(id)
 
+    def get_or_404(self, id):
+        """Returns an instance of the service's model with the specified id or
+        raises an 404 error if an instance with the specified id does not exist.
+        :param id: the instance id
+        """
+        return self.__model__.query.get_or_404(id)
+
     def save(self, model):
         """Commits the model to the database and returns the model
         :param model: the model to save
@@ -62,4 +69,11 @@ class Service(object):
         :param **kwargs: filter parameters
         """
         return self.find(**kwargs).first()
-
+    
+    def delete(self, model):
+        """Immediately deletes the specified model instance.
+        :param model: the model instance to delete
+        """
+        self._isinstance(model)
+        db.session.delete(model)
+        db.session.commit()

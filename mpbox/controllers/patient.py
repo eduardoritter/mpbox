@@ -8,11 +8,10 @@ from flask_login import login_required
 from sqlalchemy.sql import exists
 
 from mpbox.extensions import db
-from mpbox.models import Patient, Visit, Plan, AdditionalPaymentType
 from mpbox.utils import validate_plan, validate_patient, ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
-from mpbox.services import patients
+from mpbox.services import patients, plans
 
 
 bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
@@ -54,7 +53,8 @@ def create():
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    patient = patients.get(id)
+    patient = patients.get_or_404(id)
+    
     form = PatientForm(obj=patient)
 
     if request.method == 'GET':
@@ -122,7 +122,7 @@ def create_plan(id):
                                form=planForm, readonly=False)
    
     if planForm.validate_on_submit():
-        plan = Plan()
+        plan = plans.new()
         planForm.populate_obj(plan)
 
         try:
@@ -132,10 +132,8 @@ def create_plan(id):
             return render_template('plan.html', patient=patient, plans=plans, 
                                    form=planForm, readonly=False)
 
-        plan.patient=patient                               
-    
-        db.session.add(plan)
-        db.session.commit()
+        plan.patient=patient 
+        plans.save(plan)                              
 
         flash('Plano foi cadastrado com sucesso!')
         return redirect(url_for('patient.plans', id=patient.id))

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
 
+from mpbox.services import plans, visits
 from mpbox.extensions import db
-from mpbox.models import Visit, PlanType
 from mpbox.utils import validate_visit, ValidationError
 from mpbox.config import BASE_URL_PREFIX
 from .forms import VisitForm
@@ -14,7 +14,7 @@ bp = Blueprint('visit', __name__, url_prefix=BASE_URL_PREFIX + 'visit')
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 def update(id):
 
-    visit = Visit.query.get(id)
+    visit = visits.get(id)
 
     if not visit:
         flash('Internal Error')
@@ -34,8 +34,7 @@ def update(id):
             flash(error)
             return render_template('visit.html', form=visitForm, plan=visit.plan)
 
-        db.session.add(visit)
-        db.session.commit()
+        visits.save(visit)
 
         flash('Consulta foi atualizada com sucesso!')
         return redirect(url_for('patient.plans', id=visit.plan.patient_id))
@@ -46,7 +45,7 @@ def update(id):
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 def delete(id):
-    visit = Visit.query.get(id)
+    visit = visits.get(id)
 
     if not visit:
         flash('Internal Error')
@@ -54,7 +53,7 @@ def delete(id):
 
     plan = visit.plan
 
-    db.session.delete(visit)
-    db.session.commit()
+    visits.delete(visit)
+
     flash('Consulta foi excluída com sucesso!')
     return redirect(url_for('plan.display', id=plan.id))
