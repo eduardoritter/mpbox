@@ -5,21 +5,14 @@ from flask import Blueprint, render_template, request, redirect, request, url_fo
 from flask_wtf import FlaskForm, Form
 from flask_login import login_required
 
-from sqlalchemy.sql import exists
-
 from mpbox.extensions import db
-from mpbox.utils import validate_plan, validate_patient, ValidationError, classify_plans, is_active_plan, has_active_plan
+from mpbox.utils import validate_plan,  ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
 from mpbox.services import patients, plans
 
 
 bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
-
-
-def patient_exist(patient):
-    if db.session.query(exists().where(Patient.cpf == patient.cpf)).scalar():
-        raise ValidationError('Paciente ' + patient.name + ' já registrado!')
 
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -32,18 +25,15 @@ def create():
 
     if form.validate_on_submit():
 
-        patient = Patient()        
+        patient = patients.new()       
         form.populate_obj(patient)
 
         try:
-            validate_patient(patient)
-            patient_exist(patient)
+            patients.create(patient)
         except ValidationError as error:
             flash(error)
             return render_template('patient.html', form=form)
          
-        patients.save(patient)
-
         flash('Paciente foi adicionado !')
         return redirect(url_for('patient.plans', id=patient.id))
         
@@ -65,12 +55,10 @@ def update(id):
         form.populate_obj(patient)
 
         try:
-            validate_patient(patient)
+            patients.save(patient)
         except Exception as error:
             flash(error)
             return render_template('patient.html', form=form) 
-
-        patients.save(patient)
 
         flash('Paciente foi atualizado !')
         return redirect(url_for('home.home'))

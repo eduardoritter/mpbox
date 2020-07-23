@@ -1,19 +1,11 @@
 import pytz
 from datetime import datetime
-from validate_docbr import CPF
 
 from mpbox.models.model import PlanType, AdditionalPaymentType, PaymentType
 
 
 class ValidationError(Exception):
     pass
-
-def validate_patient(patient):
-    
-    cpf = CPF()
-
-    if not cpf.validate(patient.cpf):
-        raise ValidationError('CPF inválido!')
 
 
 def validate_plan(plan):

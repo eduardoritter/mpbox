@@ -4,4 +4,3 @@ patients = PatientService()
 plans = PlanService()
 visits = VisitService()
 users = UserService()
-
