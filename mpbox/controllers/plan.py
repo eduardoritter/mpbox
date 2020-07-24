@@ -1,6 +1,3 @@
-from datetime import datetime
-import pytz
-
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
@@ -101,10 +98,7 @@ def visit(id):
     visitForm = VisitForm()
 
     if request.method == 'GET':
-        tz = pytz.timezone('America/Sao_Paulo')
-        now = datetime.now(tz=tz)
-        visit.date = now.date()
-        visit.time = now.time()
+
         visit.sequence_number = len(plan.visits) + 1
         visitForm = VisitForm(obj=visit)
         return render_template('visit.html', form=visitForm, plan=plan)

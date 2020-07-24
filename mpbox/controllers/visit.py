@@ -2,8 +2,7 @@ from flask import Blueprint, render_template, request, redirect, request, url_fo
 from flask_wtf import FlaskForm, Form
 
 from mpbox.services import plans, visits
-from mpbox.extensions import db
-from mpbox.utils import validate_visit, ValidationError
+from mpbox.utils import ValidationError
 from mpbox.config import BASE_URL_PREFIX
 from .forms import VisitForm
 
@@ -29,12 +28,10 @@ def update(id):
         visitForm.populate_obj(visit)
 
         try:
-            validate_visit(visit)
+            visits.save(visit)
         except ValidationError as error:
             flash(error)
             return render_template('visit.html', form=visitForm, plan=visit.plan)
-
-        visits.save(visit)
 
         flash('Consulta foi atualizada com sucesso!')
         return redirect(url_for('patient.plans', id=visit.plan.patient_id))
