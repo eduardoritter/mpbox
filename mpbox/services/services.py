@@ -36,7 +36,13 @@ class PlanService(Service):
     __model__ = Plan
 
     def __init__(self, *args, **kwargs):
-        super(PlanService, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+    def delete(self, model):
+        if (len( model.visits ) > 0):
+            raise ValidationError('Não foi possivel excluir o plano Existe consulta vinculada ao plano!')
+            
+        self.delete(model)
 
 
 class VisitService(Service):

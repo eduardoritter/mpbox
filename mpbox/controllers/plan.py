@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
-from mpbox.utils import validate_plan, validate_new_visit, ValidationError 
+from mpbox.utils import validate_plan, validate_new_visit, ValidationError
 from mpbox.config import BASE_URL_PREFIX
 from mpbox.services import plans, visits
 from .forms import PlanForm, VisitForm
@@ -29,7 +29,7 @@ def visit_sequence(sequence):
     if sequence == 3:
         return 'Terceira'
     if sequence == 4:
-        return 'Quarta'    
+        return 'Quarta'
     return sequence
 
 
@@ -38,7 +38,7 @@ def visit_sequence(sequence):
 def display(id):
     plan = plans.get(id)
     planForm = PlanForm(obj=plan)
-    return render_template('plan.html', form=planForm, visits=plan.visits, patient=plan.patient, readonly=True )
+    return render_template('plan.html', form=planForm, visits=plan.visits, patient=plan.patient, readonly=True)
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
@@ -47,13 +47,13 @@ def update(id):
     plan = plans.get(id)
     planForm = PlanForm(obj=plan)
 
-    if request.method == 'GET':        
+    if request.method == 'GET':
         return render_template('plan.html', form=planForm, patient=plan.patient, readonly=False)
 
     if planForm.validate_on_submit():
-        
+
         planForm.populate_obj(plan)
-        
+
         try:
             validate_plan(plan)
         except Exception as error:
@@ -70,23 +70,18 @@ def update(id):
 
 
 @bp.route('/<int:id>/delete', methods=('GET',))
+@login_required
 def delete(id):
-    plan = plans.get(id)
+    plan=plans.get(id)
+    patient=plan.patient
 
-    if not plan:
-        # abort(404)
-        return
-    
-    patient = plan.patient
-
-    if (len( plan.visits ) > 0):
-        flash('Não foi possivel excluir o plano, Existe consulta vinculada ao plano!')
+    try:
+        plans.delete(plan)
+        flash('Plano foi excluido com sucesso!')
+    except Exception as error:
+        flash(str(error))
         return redirect(url_for('patient.plans', id=patient.id))
-
-    plans.save(delete)
-
-    flash('Plano foi excluido com sucesso!')
-
+        
     return redirect(url_for('patient.plans', id=patient.id))
 
 
@@ -108,7 +103,7 @@ def visit(id):
         
         try:
             validate_new_visit(visit, plan)
-        except ValidationError as error:
+        except Exception as error:
             flash(error)
             return render_template('visit.html', form=visitForm, plan=plan)
 
