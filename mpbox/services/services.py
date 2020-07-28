@@ -5,7 +5,7 @@ from validate_docbr import CPF
 
 from mpbox.models import Patient, Plan, Visit, User
 from mpbox.core import Service
-from mpbox.utils import ValidationError, validate_visit
+from mpbox.utils import ValidationError, validate_visit, validate_plan
 from mpbox.extensions import db
 
 
@@ -38,9 +38,13 @@ class PlanService(Service):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def save(self, model):
+        validate_plan(model)
+        super().save(model)
+
     def delete(self, model):
         if (len( model.visits ) > 0):
-            raise ValidationError('Não foi possivel excluir o plano Existe consulta vinculada ao plano!')
+            raise ValidationError('Não foi possivel excluir o plano, Existe consulta vinculada ao plano!')
             
         self.delete(model)
 
@@ -52,14 +56,26 @@ class VisitService(Service):
         super().__init__(*args, **kwargs)
     
     
-    def new(self, **kwargs):
-        v = super().new(**kwargs)
-        tz = pytz.timezone('America/Sao_Paulo')
-        now = datetime.now(tz=tz)
-        v.date = now.date()
-        v.time = now.time()
-        return v
+    def new(self, plan=None, **kwargs):
+        
+        visit = super().new(**kwargs)
 
+        if plan:
+            visit.sequence_number = len(plan.visits) + 1
+            now = datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
+            visit.date = now.date()
+            visit.time = now.time()
+
+        return visit
+    
+    def create(self, model):
+
+        for visit in model.plan.visits:
+            if id(model) != id(visit):
+                if model.date == visit.date:                
+                    raise ValidationError('Já existe consulta registrada na data ' + visit.date.strftime("%d/%m/%Y"))
+
+        self.save(model)
 
     def save(self, model):
         validate_visit(model)
@@ -70,4 +86,4 @@ class UserService(Service):
     __model__ = User
 
     def __init__(self, *args, **kwargs):
-        super(UserService, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
