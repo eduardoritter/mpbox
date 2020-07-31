@@ -22,3 +22,7 @@ def search():
     patients = Patient.query.filter(Patient.name.like('%' + str(name) + '%')).all()
 
     return render_template('home.html', patients=patients)
+
+@bp.route('/ts')
+def index():
+    return render_template('index.html')
