@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, request, url_for, flash
+from flask import Blueprint, render_template, request, redirect, request, url_for, flash, jsonify
 from flask_login import login_required
 
-from mpbox.utils import validate_plan, validate_new_visit, ValidationError
+from mpbox.utils import ValidationError
 from mpbox.config import BASE_URL_PREFIX
 from mpbox.services import plans, visits
 from .forms import PlanForm, VisitForm
@@ -55,17 +55,17 @@ def update(id):
         planForm.populate_obj(plan)
 
         try:
-            validate_plan(plan)
+            #validate_plan(plan)
+            plans.save(plan)
         except Exception as error:
             flash(error)
-            return render_template('plan.html', form=planForm, patient=plan.patient, readonly=False)
-
-        plans.save(plan)
-
-        flash('Plano foi atualizado com sucesso!')
-        return redirect(url_for('patient.plans', id=plan.patient_id))
-
-    flash('Erro não foi possível atualizar o plano!')
+        else:
+            flash('Plano foi atualizado com sucesso!')
+            return redirect(url_for('patient.plans', id=plan.patient_id))
+    
+    else:
+        flash('Erro não foi possível atualizar o plano!')
+    
     return render_template('plan.html', form=planForm, patient=plan.patient, readonly=False)
 
 
@@ -73,48 +73,44 @@ def update(id):
 @login_required
 def delete(id):
     plan=plans.get(id)
-    patient=plan.patient
+    patient_id=plan.patient_id
 
     try:
         plans.delete(plan)
         flash('Plano foi excluido com sucesso!')
     except Exception as error:
         flash(str(error))
-        return redirect(url_for('patient.plans', id=patient.id))
         
-    return redirect(url_for('patient.plans', id=patient.id))
+    return redirect(url_for('patient.plans', id=patient_id))
 
 
 @bp.route('/<int:id>/visit', methods=('GET', 'POST'))
 def visit(id):
     plan = plans.get(id)
 
-    visit = visits.new()
     visitForm = VisitForm()
 
     if request.method == 'GET':
-
-        visit.sequence_number = len(plan.visits) + 1
+        visit = visits.new(plan=plan)
         visitForm = VisitForm(obj=visit)
         return render_template('visit.html', form=visitForm, plan=plan)
         
-    if visitForm.validate_on_submit():        
+    if visitForm.validate_on_submit():
+        visit = visits.new()      
         visitForm.populate_obj(visit)
+        visit.plan = plan
         
         try:
-            validate_new_visit(visit, plan)
+            visits.create(visit)
         except Exception as error:
             flash(error)
-            return render_template('visit.html', form=visitForm, plan=plan)
-
-        visit.plan = plan
-
-        visits.save(visit)
-        
-        flash('Consulta registrada com sucesso!')
-        return redirect(url_for('patient.plans', id=plan.patient_id))
-
-    flash('Erro não foi possível registrar consulta!')   
+        else:
+            flash('Consulta registrada com sucesso!')
+            return redirect(url_for('patient.plans', id=plan.patient_id))
+    
+    else:
+        flash('Erro não foi possível registrar consulta!')   
+    
     return render_template('visit.html', form=visitForm, plan=plan)
 
 
@@ -126,3 +122,15 @@ def display_json(id):
     
     return 'OI'
 
+@bp.route('/people')
+def people():
+    data = {
+        'firstname': 'Ozcan',
+        'lastname': 'Yarimdunya',
+        'age': 24,
+        'companies': [
+            'Ankaway Companies Group',
+            'Huawei Technologies'
+        ]
+    }
+    return jsonify(data)
