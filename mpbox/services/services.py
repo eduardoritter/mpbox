@@ -15,7 +15,6 @@ class PatientService(Service):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
     def save(self, model):
         cpf = CPF()
 
@@ -24,12 +23,17 @@ class PatientService(Service):
 
         super().save(model)
 
-
     def create(self, model):
         if db.session.query(exists().where(Patient.cpf == model.cpf)).scalar():
             raise ValidationError('Paciente %s já registrado!' % model.name)
 
         self.save(model)
+
+    def delete(self, model):
+        if (len( model.plans ) > 0):
+            raise ValidationError('Não foi possivel excluir o paciente %s, Existe plano vinculado ao paciente!' % model.name)   
+            
+        super.delete(model)
 
 
 class PlanService(Service):
@@ -46,7 +50,7 @@ class PlanService(Service):
         if (len( model.visits ) > 0):
             raise ValidationError('Não foi possivel excluir o plano, Existe consulta vinculada ao plano!')
             
-        self.delete(model)
+        super.delete(model)
 
 
 class VisitService(Service):

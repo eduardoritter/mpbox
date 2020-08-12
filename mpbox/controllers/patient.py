@@ -32,10 +32,12 @@ def create():
             patients.create(patient)
         except ValidationError as error:
             flash(error)
-            return render_template('patient.html', form=form)
-         
-        flash('Paciente foi adicionado !')
-        return redirect(url_for('patient.plans', id=patient.id))
+        else:
+            flash('Paciente foi adicionado !')
+            return redirect(url_for('patient.plans', id=patient.id))
+
+    else:
+        flash('Erro não foi possível cadastrar o paciente!')
         
     return render_template('patient.html', form=form)
 
@@ -58,11 +60,13 @@ def update(id):
             patients.save(patient)
         except Exception as error:
             flash(error)
-            return render_template('patient.html', form=form) 
-
-        flash('Paciente foi atualizado !')
-        return redirect(url_for('home.home'))
-
+        else:
+            flash('Paciente %s foi atualizado!' % patient.name)
+            return redirect(url_for('home.home'))
+    
+    else:
+        flash('Erro não foi possível atualizar o paciente!')
+    
     return render_template('patient.html', form=form)
 
 
@@ -71,18 +75,18 @@ def update(id):
 def delete(id):
     patient = patients.get(id)
 
-    if (len( patient.plans ) > 0):
-        flash('Não foi possivel excluir o paciente, Existe plano vinculado ao paciente!')
-        return redirect(url_for('home.home'))
+    try:
+        patients.delete(patient)
+        flash('Paciente %s foi excluido com sucesso!' % patient.name)
+    except Exception as error:
+        flash(str(error))
 
-    patients.delete(patient)
-    flash('Paciente foi excluido com sucesso!')
     return redirect(url_for('home.home'))
 
 
 @bp.route('/<int:id>/plans', methods=('GET', 'POST'))
 @login_required
-def plans(id):
+def my_plans(id):
     
     patient = patients.get(id)
     active_plans, old_plans = classify_plans(patient.plans)
@@ -102,11 +106,11 @@ def create_plan(id):
         return render_template('plan.html', patient=patient, 
                                form=planForm, readonly=False)
     
-    plans = patient.plans
+    patient_plans = patient.plans
 
-    if has_active_plan(plans):
+    if has_active_plan(patient_plans):
         flash(patient.name + ' já possui plano ativo!')        
-        return render_template('plan.html', patient=patient, plans=plans, 
+        return render_template('plan.html', patient=patient, plans=patient_plans, 
                                form=planForm, readonly=False)
    
     if planForm.validate_on_submit():
@@ -124,7 +128,7 @@ def create_plan(id):
         plans.save(plan)                              
 
         flash('Plano foi cadastrado com sucesso!')
-        return redirect(url_for('patient.plans', id=patient.id))
+        return redirect(url_for('patient.my_plans', id=patient.id))
     
     flash('Erro: Plano não cadastrado!')
     return render_template('plan.html', patient=patient, plans=plans, 
