@@ -99,20 +99,19 @@ def my_plans(id):
 @login_required
 def create_plan(id):
     patient = patients.get(id)
-    expiry = date.today() + relativedelta(months=6)
-    planForm = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
 
-    if request.method == 'GET': 
+    if has_active_plan(patient.plans):
+        flash('Paciente %s já possui um plano ativo!' % patient.name)        
+        return redirect(url_for('patient.my_plans', id=patient.id))
+
+    if request.method == 'GET':
+        expiry = date.today() + relativedelta(months=6)
+        planForm = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
         return render_template('plan.html', patient=patient, 
                                form=planForm, readonly=False)
     
-    patient_plans = patient.plans
+    planForm = PlanForm()
 
-    if has_active_plan(patient_plans):
-        flash(patient.name + ' já possui plano ativo!')        
-        return render_template('plan.html', patient=patient, plans=patient_plans, 
-                               form=planForm, readonly=False)
-   
     if planForm.validate_on_submit():
         plan = plans.new()
         planForm.populate_obj(plan)

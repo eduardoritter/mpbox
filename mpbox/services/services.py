@@ -50,7 +50,7 @@ class PlanService(Service):
         if (len( model.visits ) > 0):
             raise ValidationError('Não foi possivel excluir o plano, Existe consulta vinculada ao plano!')
             
-        super.delete(model)
+        super().delete(model)
 
 
 class VisitService(Service):

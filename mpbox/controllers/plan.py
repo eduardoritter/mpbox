@@ -61,7 +61,7 @@ def update(id):
             flash(error)
         else:
             flash('Plano foi atualizado com sucesso!')
-            return redirect(url_for('patient.plans', id=plan.patient_id))
+            return redirect(url_for('patient.my_plans', id=plan.patient_id))
     
     else:
         flash('Erro não foi possível atualizar o plano!')
@@ -81,7 +81,7 @@ def delete(id):
     except Exception as error:
         flash(str(error))
         
-    return redirect(url_for('patient.plans', id=patient_id))
+    return redirect(url_for('patient.my_plans', id=patient_id))
 
 
 @bp.route('/<int:id>/visit', methods=('GET', 'POST'))
