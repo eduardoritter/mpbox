@@ -100,35 +100,34 @@ def my_plans(id):
 def create_plan(id):
     patient = patients.get(id)
 
-    if has_active_plan(patient.plans):
-        flash('Paciente %s já possui um plano ativo!' % patient.name)        
-        return redirect(url_for('patient.my_plans', id=patient.id))
-
     if request.method == 'GET':
+        if has_active_plan(patient.plans):
+            flash('Paciente %s já possui um plano ativo!' % patient.name)        
+            return redirect(url_for('patient.my_plans', id=patient.id))
+        
         expiry = date.today() + relativedelta(months=6)
-        planForm = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
+        form = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
         return render_template('plan.html', patient=patient, 
-                               form=planForm, readonly=False)
+                               form=form, readonly=False)
     
-    planForm = PlanForm()
+    form = PlanForm(request.form)
 
-    if planForm.validate_on_submit():
+    if form.validate_on_submit():
         plan = plans.new()
-        planForm.populate_obj(plan)
+        form.populate_obj(plan)
 
         try:
             validate_plan(plan)
+            plan.patient=patient 
+            plans.save(plan)  
         except Exception as error:
             flash(error)            
-            return render_template('plan.html', patient=patient, plans=plans, 
-                                   form=planForm, readonly=False)
-
-        plan.patient=patient 
-        plans.save(plan)                              
-
-        flash('Plano foi cadastrado com sucesso!')
-        return redirect(url_for('patient.my_plans', id=patient.id))
+        else:
+            flash('Plano foi cadastrado com sucesso!')
+            return redirect(url_for('patient.my_plans', id=patient.id))
     
-    flash('Erro: Plano não cadastrado!')
-    return render_template('plan.html', patient=patient, plans=plans, 
-                           form=planForm, readonly=False)
+    else:
+        flash('Erro: Plano não cadastrado!')
+    
+    return render_template('plan.html', patient=patient,
+                           form=form, readonly=False)
