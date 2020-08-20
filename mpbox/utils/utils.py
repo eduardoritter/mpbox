@@ -1,7 +1,14 @@
+import pytz
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 from mpbox.models.model import PlanType
 
 
 def is_active_plan(plan):
+
+    if now().date() > plan.expiry_date:
+        return False
 
     if (plan.plan_type == PlanType.P2 and
             len(plan.visits) < 2):
@@ -42,3 +49,9 @@ def classify_plans(plans):
             old_plans.append(p)
 
     return active_plans, old_plans
+
+def now():
+    return datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
+
+def six_months_from_now():
+    return now().date() + relativedelta(months=6)

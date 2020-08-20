@@ -1,12 +1,9 @@
-from datetime import date
-from dateutil.relativedelta import relativedelta
-
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_wtf import FlaskForm, Form
 from flask_login import login_required
 
 from mpbox.extensions import db
-from mpbox.utils import validate_plan,  ValidationError, classify_plans, is_active_plan, has_active_plan
+from mpbox.utils import ValidationError, classify_plans, is_active_plan, has_active_plan, six_months_from_now
 from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
 from mpbox.services import patients, plans
@@ -105,8 +102,9 @@ def create_plan(id):
             flash('Paciente %s já possui um plano ativo!' % patient.name)        
             return redirect(url_for('patient.my_plans', id=patient.id))
         
-        expiry = date.today() + relativedelta(months=6)
-        form = PlanForm(additional_value=0.00, paid=True, expiry_date=expiry)
+        form = PlanForm(additional_value=0.00, paid=True, 
+                        expiry_date=six_months_from_now())
+
         return render_template('plan.html', patient=patient, 
                                form=form, readonly=False)
     
@@ -117,7 +115,6 @@ def create_plan(id):
         form.populate_obj(plan)
 
         try:
-            validate_plan(plan)
             plan.patient=patient 
             plans.save(plan)  
         except Exception as error:

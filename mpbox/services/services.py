@@ -1,11 +1,9 @@
-import pytz
-from datetime import datetime
 from sqlalchemy.sql import exists
 from validate_docbr import CPF
 
 from mpbox.models import Patient, Plan, Visit, User
 from mpbox.core import Service
-from mpbox.utils import ValidationError, validate_visit, validate_plan
+from mpbox.utils import ValidationError, validate_visit, validate_plan, now
 from mpbox.extensions import db
 
 
@@ -19,7 +17,7 @@ class PatientService(Service):
         cpf = CPF()
 
         if not cpf.validate(model.cpf):
-            raise ValidationError('CPF inválido!')
+            raise ValidationError('CPF %s inválido!' % model.cpf)
 
         super().save(model)
 
@@ -66,9 +64,9 @@ class VisitService(Service):
 
         if plan:
             visit.sequence_number = len(plan.visits) + 1
-            now = datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
-            visit.date = now.date()
-            visit.time = now.time()
+            
+        visit.date = now().date()
+        visit.time = now().time()
 
         return visit
     
