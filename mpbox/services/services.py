@@ -3,7 +3,7 @@ from validate_docbr import CPF
 
 from mpbox.models import Patient, Plan, Visit, User
 from mpbox.core import Service
-from mpbox.utils import ValidationError, validate_visit, validate_plan, now
+from mpbox.utils import ValidationError, validate_visit, validate_plan, now, six_months_from_now
 from mpbox.extensions import db
 
 
@@ -39,6 +39,15 @@ class PlanService(Service):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+    
+    def new_set_default(self, **kwargs):
+        plan = super().new(**kwargs)
+
+        plan.additional_value=0.00 
+        plan.paid=True 
+        plan.expiry_date=six_months_from_now()
+
+        return plan
 
     def save(self, model):
         validate_plan(model)
@@ -58,7 +67,7 @@ class VisitService(Service):
         super().__init__(*args, **kwargs)
     
     
-    def new(self, plan=None, **kwargs):
+    def new_set_default(self, plan=None, **kwargs):
         
         visit = super().new(**kwargs)
 
@@ -70,16 +79,12 @@ class VisitService(Service):
 
         return visit
     
-    def create(self, model):
-
+    def save(self, model):
         for visit in model.plan.visits:
             if id(model) != id(visit):
                 if model.date == visit.date:                
                     raise ValidationError('Já existe consulta registrada na data ' + visit.date.strftime("%d/%m/%Y"))
 
-        self.save(model)
-
-    def save(self, model):
         validate_visit(model)
         super().save(model)
 

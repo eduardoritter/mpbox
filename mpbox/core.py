@@ -50,6 +50,13 @@ class Service(object):
         """
         return self.__model__(**kwargs)
 
+    def new_and_populate(self, form, **kwargs):
+        """Returns a new, populated and unsaved instance of the service's model class.
+        """
+        model=self.new(**kwargs)
+        form.populate_obj(model)
+        return model
+
     def create(self, **kwargs):
         """Returns a new, saved instance of the service's model class.
         :param **kwargs: instance parameters

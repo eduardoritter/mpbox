@@ -37,25 +37,24 @@ def visit_sequence(sequence):
 @login_required
 def display(id):
     plan = plans.get(id)
-    planForm = PlanForm(obj=plan)
-    return render_template('plan.html', form=planForm, visits=plan.visits, patient=plan.patient, readonly=True)
+    form = PlanForm(obj=plan)
+    return render_template('plan.html', form=form, visits=plan.visits, patient=plan.patient, readonly=True)
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
     plan = plans.get(id)
-    planForm = PlanForm(obj=plan)
+    form = PlanForm(obj=plan)
 
     if request.method == 'GET':
-        return render_template('plan.html', form=planForm, patient=plan.patient, readonly=False)
+        return render_template('plan.html', form=form, patient=plan.patient, readonly=False)
 
-    if planForm.validate_on_submit():
+    if form.validate_on_submit():
 
-        planForm.populate_obj(plan)
+        form.populate_obj(plan)
 
         try:
-            #validate_plan(plan)
             plans.save(plan)
         except Exception as error:
             flash(error)
@@ -66,7 +65,7 @@ def update(id):
     else:
         flash('Erro não foi possível atualizar o plano!')
     
-    return render_template('plan.html', form=planForm, patient=plan.patient, readonly=False)
+    return render_template('plan.html', form=form, patient=plan.patient, readonly=False)
 
 
 @bp.route('/<int:id>/delete', methods=('GET',))
@@ -88,20 +87,18 @@ def delete(id):
 def visit(id):
     plan = plans.get(id)
 
-    visitForm = VisitForm()
-
     if request.method == 'GET':
-        visit = visits.new(plan=plan)
-        visitForm = VisitForm(obj=visit)
-        return render_template('visit.html', form=visitForm, plan=plan)
-        
-    if visitForm.validate_on_submit():
-        visit = visits.new()      
-        visitForm.populate_obj(visit)
+        form = VisitForm(obj=visits.new_set_default(plan=plan))
+        return render_template('visit.html', form=form, plan=plan)
+
+    form = VisitForm()   
+    if form.validate_on_submit():
+        visit = visits.new_and_populate(form)
         visit.plan = plan
         
         try:
-            visits.create(visit)
+            #????
+            visits.save(visit)
         except Exception as error:
             flash(error)
         else:
@@ -111,7 +108,7 @@ def visit(id):
     else:
         flash('Erro não foi possível registrar consulta!')   
     
-    return render_template('visit.html', form=visitForm, plan=plan)
+    return render_template('visit.html', form=form, plan=plan)
 
 
 @bp.route('json/<int:id>')

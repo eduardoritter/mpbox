@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm, Form
 from flask_login import login_required
 
 from mpbox.extensions import db
-from mpbox.utils import ValidationError, classify_plans, is_active_plan, has_active_plan, six_months_from_now
+from mpbox.utils import ValidationError, classify_plans, is_active_plan, has_active_plan
 from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
 from mpbox.services import patients, plans
@@ -22,8 +22,7 @@ def create():
 
     if form.validate_on_submit():
 
-        patient = patients.new()       
-        form.populate_obj(patient)
+        patient = patients.new_and_populate(form)       
 
         try:
             patients.create(patient)
@@ -102,9 +101,7 @@ def create_plan(id):
             flash('Paciente %s já possui um plano ativo!' % patient.name)        
             return redirect(url_for('patient.my_plans', id=patient.id))
         
-        form = PlanForm(additional_value=0.00, paid=True, 
-                        expiry_date=six_months_from_now())
-
+        form = PlanForm(plans.new_set_default())
         return render_template('plan.html', patient=patient, 
                                form=form, readonly=False)
     
