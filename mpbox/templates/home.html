@@ -83,7 +83,7 @@
 
 {% endif %}
 
-{% if lastVisits %}
+{% if last_visits %}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -113,7 +113,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for v in lastVisits %}
+    {% for v in last_visits %}
     <tr>
       <th scope="row">{{ v.id }}</th>
       <td><a href="{{ url_for('patient.my_plans', id=v.plan.patient['id']) }}" title="{{ v.plan.patient.name }}">{{ v.plan.patient.name }}</a></td>

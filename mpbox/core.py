@@ -69,6 +69,9 @@ class Service(object):
         :param **kwargs: filter parameters
         """
         return self.__model__.query.filter_by(**kwargs)
+    
+    def filter(self, *args):
+        return self.__model__.query.filter(*args)
 
     def first(self, **kwargs):
         """Returns the first instance found of the service's model filtered by
@@ -76,6 +79,9 @@ class Service(object):
         :param **kwargs: filter parameters
         """
         return self.find(**kwargs).first()
+    
+    def last(self, limit=5):
+        return self.__model__.query.order_by(self.__model__.created.desc()).limit(limit)
     
     def delete(self, model):
         """Immediately deletes the specified model instance.
