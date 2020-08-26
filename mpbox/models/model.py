@@ -74,7 +74,15 @@ class Patient(db.Model):
     inactive = Column(Boolean, default=False)
     note = Column(Text)
     created = Column(DateTime, default=datetime.utcnow)
-    
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'id'  : self.id,
+           'name': self.name
+       }
+
 
 class Plan(db.Model):
     __tablename__ = 'plan'

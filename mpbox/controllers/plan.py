@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, request, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
 from mpbox.utils import ValidationError
@@ -111,23 +111,4 @@ def visit(id):
     return render_template('visit.html', form=form, plan=plan)
 
 
-@bp.route('json/<int:id>')
-def display_json(id):
-    
-    if request.is_json:
-        return request.get_json()
-    
-    return 'OI'
 
-@bp.route('/people')
-def people():
-    data = {
-        'firstname': 'Ozcan',
-        'lastname': 'Yarimdunya',
-        'age': 24,
-        'companies': [
-            'Ankaway Companies Group',
-            'Huawei Technologies'
-        ]
-    }
-    return jsonify(data)
