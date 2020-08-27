@@ -28,7 +28,7 @@ class PatientService(Service):
         self.save(model)
 
     def delete(self, model):
-        if (len( model.plans ) > 0):
+        if len(model.plans) > 0:
             raise ValidationError('Não foi possivel excluir o paciente %s, Existe plano vinculado ao paciente!' % model.name)   
             
         super.delete(model)

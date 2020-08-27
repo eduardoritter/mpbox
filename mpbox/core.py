@@ -53,7 +53,7 @@ class Service(object):
     def new_and_populate(self, form, **kwargs):
         """Returns a new, populated and unsaved instance of the service's model class.
         """
-        model=self.new(**kwargs)
+        model = self.new(**kwargs)
         form.populate_obj(model)
         return model
 

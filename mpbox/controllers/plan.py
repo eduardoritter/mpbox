@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, request, url_for, flash
 from flask_login import login_required
 
-from mpbox.utils import ValidationError
 from mpbox.config import BASE_URL_PREFIX
 from mpbox.services import plans, visits
 from .forms import PlanForm, VisitForm
@@ -47,11 +46,7 @@ def update(id):
     plan = plans.get(id)
     form = PlanForm(obj=plan)
 
-    if request.method == 'GET':
-        return render_template('plan.html', form=form, patient=plan.patient, readonly=False)
-
     if form.validate_on_submit():
-
         form.populate_obj(plan)
 
         try:
@@ -61,18 +56,15 @@ def update(id):
         else:
             flash('Plano foi atualizado com sucesso!')
             return redirect(url_for('patient.my_plans', id=plan.patient_id))
-    
-    else:
-        flash('Erro não foi possível atualizar o plano!')
-    
+
     return render_template('plan.html', form=form, patient=plan.patient, readonly=False)
 
 
 @bp.route('/<int:id>/delete', methods=('GET',))
 @login_required
 def delete(id):
-    plan=plans.get(id)
-    patient_id=plan.patient_id
+    plan = plans.get(id)
+    patient_id = plan.patient_id
 
     try:
         plans.delete(plan)
@@ -86,12 +78,8 @@ def delete(id):
 @bp.route('/<int:id>/visit', methods=('GET', 'POST'))
 def visit(id):
     plan = plans.get(id)
+    form = VisitForm()
 
-    if request.method == 'GET':
-        form = VisitForm(obj=visits.new_set_default(plan=plan))
-        return render_template('visit.html', form=form, plan=plan)
-
-    form = VisitForm()   
     if form.validate_on_submit():
         visit = visits.new_and_populate(form)
         visit.plan = plan
@@ -104,11 +92,8 @@ def visit(id):
         else:
             flash('Consulta registrada com sucesso!')
             return redirect(url_for('patient.plans', id=plan.patient_id))
-    
-    else:
-        flash('Erro não foi possível registrar consulta!')   
+
+    if not form.is_submitted():
+        form = VisitForm(obj=visits.new_set_default(plan=plan))
     
     return render_template('visit.html', form=form, plan=plan)
-
-
-

@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, request, url_for, flash
-from flask_wtf import FlaskForm, Form
+from flask import Blueprint, render_template, redirect, request, url_for, flash
 
-from mpbox.services import plans, visits
+from mpbox.services import visits
 from mpbox.utils import ValidationError
 from mpbox.config import BASE_URL_PREFIX
 from .forms import VisitForm
@@ -12,45 +11,32 @@ bp = Blueprint('visit', __name__, url_prefix=BASE_URL_PREFIX + 'visit')
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 def update(id):
-
     visit = visits.get(id)
+    form = VisitForm(obj=visit)
 
-    if not visit:
-        flash('Internal Error')
-        return redirect(url_for('home.home'))
-
-    visitForm = VisitForm(obj=visit)
-
-    if request.method == 'GET':        
-        return render_template('visit.html', form=visitForm, plan=visit.plan)
-       
-    if visitForm.validate_on_submit():
-        visitForm.populate_obj(visit)
+    if form.validate_on_submit():
+        form.populate_obj(visit)
 
         try:
             visits.save(visit)
         except ValidationError as error:
             flash(error)
-            return render_template('visit.html', form=visitForm, plan=visit.plan)
+        else:
+            flash('Consulta foi atualizada com sucesso!')
+            return redirect(url_for('patient.plans', id=visit.plan.patient_id))
 
-        flash('Consulta foi atualizada com sucesso!')
-        return redirect(url_for('patient.plans', id=visit.plan.patient_id))
-
-    flash('Erro não foi possível atualizar a consulta!')
-    return render_template('visit.html', form=visitForm, plan=visit.plan)
+    return render_template('visit.html', form=form, plan=visit.plan)
 
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 def delete(id):
     visit = visits.get(id)
-
-    if not visit:
-        flash('Internal Error')
-        return redirect(url_for('home.home'))
-
     plan = visit.plan
 
-    visits.delete(visit)
+    try:
+        visits.delete(visit)
+        flash('Consulta foi excluída com sucesso!')
+    except Exception as error:
+        flash(str(error))
 
-    flash('Consulta foi excluída com sucesso!')
     return redirect(url_for('plan.display', id=plan.id))

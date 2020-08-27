@@ -1,5 +1,6 @@
 BASE_URL_PREFIX = '/mpbox/'
 
+
 def config_app(app):
 
     app.config.from_mapping(

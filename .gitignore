@@ -1,6 +1,9 @@
 # General
 .DS_Store
 
+venv/
+.idea
+
 ### Visual Studio Code ###
 .vscode/*
 .vscode/launch.json
