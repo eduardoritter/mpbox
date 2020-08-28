@@ -74,7 +74,7 @@
     {% for p in last_plans %}
     <tr>
       <th scope="row">{{ p.id }}</th>
-      <td><a href="{{ url_for('patient.plans', id=p.patient['id']) }}"
+      <td><a href="{{ url_for('patient.my_plans', id=p.patient['id']) }}"
           title="{{ p.patient.name }}">{{ p.patient.name }}</a></td>
       <td>{{ p.plan_type }}</td>
       <td>{{ p.payment_type }}</td>
@@ -118,7 +118,7 @@
     {% for v in visits %}
     <tr>
       <th scope="row">{{ v.id }}</th>
-      <td><a href="{{ url_for('patient.plans', id=v.plan.patient['id']) }}"
+      <td><a href="{{ url_for('patient.my_plans', id=v.plan.patient['id']) }}"
           title="{{ v.plan.patient.name }}">{{ v.plan.patient.name }}</a></td>
       <td>{{ v.date|to_date }}</td>
       <td>{{ v.time|to_time }}</td>

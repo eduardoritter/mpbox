@@ -27,6 +27,7 @@ class PaymentType(enum.Enum):
     def __html__(self):
         return self.value
 
+
 class AdditionalPaymentType(enum.Enum):
     NA = "Não Aplicável"
     DI = "Dinheiro"
@@ -47,6 +48,7 @@ class AdditionalPaymentType(enum.Enum):
     def __html__(self):
         return self.value
 
+
 class PlanType(enum.Enum):
     P4 = "Pacote 4"
     P2 = "Consulta/Reconsulta"    
@@ -62,6 +64,7 @@ class PlanType(enum.Enum):
     
     def __html__(self):
         return self.value
+
 
 class Patient(db.Model):
     __tablename__ = 'patient'

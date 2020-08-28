@@ -23,7 +23,7 @@ def create():
             flash(error)
         else:
             flash('Paciente foi adicionado!')
-            return redirect(url_for('patient.plans', id=patient.id))
+            return redirect(url_for('patient.my_plans', id=patient.id))
 
     return render_template('patient.html', form=form)
 

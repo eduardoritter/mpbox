@@ -23,7 +23,7 @@ def update(id):
             flash(error)
         else:
             flash('Consulta foi atualizada com sucesso!')
-            return redirect(url_for('patient.plans', id=visit.plan.patient_id))
+            return redirect(url_for('patient.my_plans', id=visit.plan.patient_id))
 
     return render_template('visit.html', form=form, plan=visit.plan)
 

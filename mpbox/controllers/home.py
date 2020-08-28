@@ -19,8 +19,9 @@ def home():
 @login_required
 def search():
     name = request.args.get('name')    
-    patient_list = patients.filter(Patient.name.like('%' + str(name)) + '%').all()
+    patient_list = patients.filter(Patient.name.like('%' + str(name) + '%')).all()
     return render_template('home.html', patients=patient_list)
+
 
 @bp.route('/ts')
 def index():

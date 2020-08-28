@@ -9,33 +9,42 @@ class ValidationError(Exception):
 
 
 def validate_plan(plan):
-    
-    if plan.plan_type == PlanType.IN.name or plan.plan_type == PlanType.AV.name:
+
+    plan_type = PlanType[plan.plan_type]
+    payment_type = PaymentType[plan.payment_type]
+    add_payment_type = AdditionalPaymentType[plan.additional_payment_type]
+
+    if plan_type is PlanType.IN or plan_type is PlanType.AV:
         if len(plan.visits) > 1:
-            raise Exception('Não foi possivel modificar o Tipo do Plano, Existem consultas vinculadas ao plano!')
+            raise Exception('Não é possivel alterar o Tipo do Plano, Existe(m) consulta(s) vinculada(s) ao plano!')
 
-    if plan.payment_type == PaymentType.CO.name:
+    if plan_type is PlanType.P2:
+        if len(plan.visits) > 2:
+            raise Exception('Não é possivel alterar o Tipo do Plano, Existe(m) consulta(s) vinculada(s) ao plano!')
+
+    if payment_type is PaymentType.CO:
         if plan.value > 0:
-            raise Exception('Plano Cortesia campo valor dever estar zerado!')
+            raise Exception('Plano Cortesia, campo valor dever estar zerado!')
+    else:
+        if plan.value == 0:
+            raise Exception('Informe o valor!')
 
-    if plan.additional_value == 0:
-        if plan.additional_payment_type != AdditionalPaymentType.NA.name:
+    if add_payment_type is AdditionalPaymentType.NA:
+        if plan.additional_value > 0:
             raise Exception('Verifique a Forma de Pagamento Adicional!')
     else:
-        if plan.additional_payment_type == AdditionalPaymentType.NA.name:
-            raise Exception('Informe a Forma de Pagamento Adicional!')
+        if plan.additional_value == 0:
+            raise Exception('Verifique a Forma de Pagamento Adicional!')
 
 
-def validate_visit(visit, plan=None):
+def validate_visit(visit):
     now = datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
 
     if visit.date > now.date():
         raise ValidationError('Não é possivel registrar consulta no futuro!')
 
-    if plan:
-        expiry_date = plan.expiry_date
-    else:
-        expiry_date = visit.plan.expiry_date
-    
-    if visit.date > expiry_date:
+    if visit.sequence_number > len(visit.plan.visits):
+        raise ValidationError('Verifique o número de sequência da consulta!')
+
+    if visit.date > visit.plan.expiry_date:
         raise ValidationError('Plano expirado! Não é possivel registrar a consulta.')

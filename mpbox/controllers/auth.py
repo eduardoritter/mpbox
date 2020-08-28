@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import login_user, logout_user
 
-from mpbox.models import User
 from mpbox.services import users
 from mpbox.extensions import login_manager
 from mpbox.config import BASE_URL_PREFIX
@@ -56,8 +55,7 @@ def create_user():
     if not username or not password:
         flash('User not created.')
         return redirect(url_for('auth.login'))
-    
-    #user = User()
+
     user = users.new()
 
     user.username = username

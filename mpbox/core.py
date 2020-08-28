@@ -80,7 +80,7 @@ class Service(object):
         """
         return self.find(**kwargs).first()
     
-    def last(self, limit=5):
+    def last(self, limit=8):
         return self.__model__.query.order_by(self.__model__.created.desc()).limit(limit)
     
     def delete(self, model):

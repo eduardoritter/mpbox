@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, request, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required
 
 from mpbox.config import BASE_URL_PREFIX
@@ -85,13 +85,12 @@ def visit(id):
         visit.plan = plan
         
         try:
-            #????
             visits.save(visit)
         except Exception as error:
             flash(error)
         else:
             flash('Consulta registrada com sucesso!')
-            return redirect(url_for('patient.plans', id=plan.patient_id))
+            return redirect(url_for('patient.my_plans', id=plan.patient_id))
 
     if not form.is_submitted():
         form = VisitForm(obj=visits.new_set_default(plan=plan))
