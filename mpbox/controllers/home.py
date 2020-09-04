@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from mpbox.models import Patient
 from mpbox.config import BASE_URL_PREFIX
-from mpbox.services import patients, plans, visits
+from mpbox.services import patients, visits
 
 
 bp = Blueprint('home', __name__, url_prefix=BASE_URL_PREFIX + 'home')

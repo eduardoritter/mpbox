@@ -4,7 +4,7 @@ from flask_login import login_required
 
 from mpbox.models.model import Plan, Visit
 from mpbox.config import BASE_URL_PREFIX
-from mpbox.services import plans
+from mpbox.services import plans, visits
 
 
 bp = Blueprint('dashboard', __name__, url_prefix=BASE_URL_PREFIX + 'dashboard')
@@ -21,11 +21,11 @@ def dashboard():
 def search():
     try:
         visit_date = datetime.strptime(request.args.get('visit_date'), '%d/%m/%Y')
-        visits = Visit.query.filter(Visit.date == visit_date.date())
+        visit_list = visits.filter(Visit.date == visit_date.date())
     except Exception as error:
         flash(error)
     
-    return render_template('dashboard.html', visits=visits)
+    return render_template('dashboard.html', visits=visit_list)
 
 
 @bp.route('/unpaid')
