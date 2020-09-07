@@ -1,5 +1,4 @@
-from . import auth, home, patient, plan, visit, dashboard
-
+from . import auth, home, patient, plan, visit, dashboard, finance
 
 default_blueprints = [
     auth.bp,
@@ -8,4 +7,5 @@ default_blueprints = [
     plan.bp,
     visit.bp,
     dashboard.bp,
+    finance.bp,
 ]

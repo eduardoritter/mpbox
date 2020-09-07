@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block jscript %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', { reverse: true });
+        $('#birthdate').mask('00/00/0000');
+        $('#birthdate').datepicker({
+            format: "dd/mm/yyyy",
+            language: "pt-BR",
+            todayHighlight: true
+        });
+    });
+</script>
+{% endblock %}
+
+{% block title %}Finance{% endblock %}
+
+{% block body %}
+<h5 class="text-center">Finance</h5>
+<div class="justify-content-center">
+
+</div>
+
+{% endblock %}
