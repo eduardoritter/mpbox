@@ -2,7 +2,7 @@
   "AWSEBDockerrunVersion": 2,
   "volumes": [
     {
-      "name": "ph-app",
+      "name": "php-app",
       "host": {
         "sourcePath": "/var/app/current/php-app"
       }
