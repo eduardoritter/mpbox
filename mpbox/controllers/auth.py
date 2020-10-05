@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
 
 from mpbox.services import users
 from mpbox.extensions import login_manager
-from mpbox.config import BASE_URL_PREFIX
 
 
-bp = Blueprint('auth', __name__, url_prefix=BASE_URL_PREFIX)
+bp = Blueprint('auth', __name__)
 
 
 @bp.route('/login', methods=['GET'])
@@ -47,6 +46,7 @@ def load_user(id):
 
 
 @bp.route('/create_user', methods=['GET'])
+@login_required
 def create_user():
 
     username = request.args.get('username')

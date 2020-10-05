@@ -1,5 +1,3 @@
-BASE_URL_PREFIX = '/mpbox/'
-
 
 def config_app(app):
 

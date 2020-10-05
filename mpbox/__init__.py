@@ -1,5 +1,5 @@
 from flask import Flask
-from mpbox.config import config_app, BASE_URL_PREFIX
+from mpbox.config import config_app
 from mpbox.extensions import db, babel, migrate, login_manager
 
 
@@ -32,7 +32,7 @@ def register_blueprints(app):
         for blueprint in blueprints:
             app.register_blueprint(blueprint)
 
-    app.add_url_rule(BASE_URL_PREFIX, endpoint='home.home')
+    app.add_url_rule('/', endpoint='home.home')
 
 
 if __name__ == "__main__":

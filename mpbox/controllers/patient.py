@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, redirect, request, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required
 
 from mpbox.utils import ValidationError, classify_plans, has_active_plan
-from mpbox.config import BASE_URL_PREFIX
 from .forms import PatientForm, PlanForm
 from mpbox.services import patients, plans
 
-bp = Blueprint('patient', __name__, url_prefix=BASE_URL_PREFIX + 'patient')
+bp = Blueprint('patient', __name__, url_prefix='/patient')
 
 
 @bp.route('/create', methods=('GET', 'POST'))

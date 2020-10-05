@@ -2,11 +2,10 @@ from flask import Blueprint, render_template, request, redirect, request, url_fo
 from flask_login import login_required
 
 from mpbox.models import Patient
-from mpbox.config import BASE_URL_PREFIX
 from mpbox.services import patients, visits
 
 
-bp = Blueprint('home', __name__, url_prefix=BASE_URL_PREFIX + 'home')
+bp = Blueprint('home', __name__, url_prefix='/home')
 
 
 @bp.route('/')

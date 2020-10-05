@@ -2,11 +2,10 @@ from flask import Blueprint, render_template, redirect, request, url_for, flash
 
 from mpbox.services import visits
 from mpbox.utils import ValidationError
-from mpbox.config import BASE_URL_PREFIX
 from .forms import VisitForm
 
 
-bp = Blueprint('visit', __name__, url_prefix=BASE_URL_PREFIX + 'visit')
+bp = Blueprint('visit', __name__, url_prefix='/visit')
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))

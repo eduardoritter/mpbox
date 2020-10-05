@@ -30,6 +30,6 @@ class VisitForm(FlaskForm):
 class PatientForm(FlaskForm):
     name = StringField('Nome', validators=[validators.required()])
     cpf = StringField('CPF', validators=[validators.required()])
-    email = StringField('Email', validators=[validators.Email(), validators.required()])
+    email = StringField('Email', validators=[validators.Email('Endereço de email inválido!'), validators.required()])
     birthdate = DateField('Data de Nascimento', format='%d/%m/%Y', validators=[validators.required()])
     note = TextAreaField('Notas')

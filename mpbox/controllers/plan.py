@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required
 
-from mpbox.config import BASE_URL_PREFIX
 from mpbox.services import plans, visits
 from .forms import PlanForm, VisitForm
 
 
-bp = Blueprint('plan', __name__, url_prefix=BASE_URL_PREFIX + 'plan')
+bp = Blueprint('plan', __name__, url_prefix='/plan')
 
 
 @bp.app_template_filter('to_date')

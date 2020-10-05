@@ -3,6 +3,7 @@ from sqlalchemy import Integer, String, Column
 from flask_login import UserMixin
 from mpbox.extensions import db
 
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)

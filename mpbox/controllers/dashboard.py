@@ -3,11 +3,10 @@ from flask import Blueprint, render_template, request, flash
 from flask_login import login_required
 
 from mpbox.models.model import Plan, Visit
-from mpbox.config import BASE_URL_PREFIX
 from mpbox.services import plans, visits
 
 
-bp = Blueprint('dashboard', __name__, url_prefix=BASE_URL_PREFIX + 'dashboard')
+bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
 
 @bp.route('/')

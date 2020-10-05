@@ -7,7 +7,20 @@ from sqlalchemy.orm import relationship
 from mpbox.extensions import db
 
 
-class PaymentType(enum.Enum):
+class EnumType(enum.Enum):
+
+    @classmethod
+    def choices(cls):
+        return [(choice.name, choice.value) for choice in cls]
+
+    def __str__(self):
+        return str(self.name)
+
+    def __html__(self):
+        return self.value
+
+
+class PaymentType(EnumType):
     DI = "Dinheiro"
     DB = "Débito"
     DP = "Depósito"
@@ -17,18 +30,8 @@ class PaymentType(enum.Enum):
     C4 = "Crédito 4 parcelas"
     CO = "Cortesia"
 
-    @classmethod
-    def choices(cls):
-        return [(choice.name, choice.value) for choice in cls]
 
-    def __str__(self):
-        return str(self.name)
-
-    def __html__(self):
-        return self.value
-
-
-class AdditionalPaymentType(enum.Enum):
+class AdditionalPaymentType(EnumType):
     NA = "Não Aplicável"
     DI = "Dinheiro"
     DB = "Débito"
@@ -38,32 +41,12 @@ class AdditionalPaymentType(enum.Enum):
     C3 = "Crédito 3 parcelas"
     C4 = "Crédito 4 parcelas"
 
-    @classmethod
-    def choices(cls):
-        return [(choice.name, choice.value) for choice in cls]
 
-    def __str__(self):
-        return str(self.name)
-
-    def __html__(self):
-        return self.value
-
-
-class PlanType(enum.Enum):
+class PlanType(EnumType):
     P4 = "Pacote 4"
-    P2 = "Consulta/Reconsulta"    
+    P2 = "Consulta/Reconsulta"
     IN = "Individual"
     AV = "Avaliação"
-
-    @classmethod
-    def choices(cls):
-        return [(choice.name, choice.value) for choice in cls]
-   
-    def __str__(self):
-        return str(self.name)
-    
-    def __html__(self):
-        return self.value
 
 
 class Patient(db.Model):
@@ -80,11 +63,11 @@ class Patient(db.Model):
 
     @property
     def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'id'  : self.id,
-           'name': self.name
-       }
+        """Return object data in easily serializable format"""
+        return {
+            'id': self.id,
+            'name': self.name
+        }
 
 
 class Plan(db.Model):
