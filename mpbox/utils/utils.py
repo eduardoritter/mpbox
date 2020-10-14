@@ -37,6 +37,7 @@ def has_active_plan(plans):
     
     return False
 
+
 def classify_plans(plans):
 
     active_plans = []
@@ -50,8 +51,23 @@ def classify_plans(plans):
 
     return active_plans, old_plans
 
+
 def now():
     return datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
 
+
 def six_months_from_now():
     return now().date() + relativedelta(months=6)
+
+
+def week_dates(year, week):
+    print(datetime.fromisocalendar(year, week, 1))
+    print(datetime.fromisocalendar(year, week, 5))
+
+
+def week_of_the_year():
+    print(datetime.date(now()).isocalendar())
+
+
+if __name__ == "__main__":
+    week_dates(2020, 42)
