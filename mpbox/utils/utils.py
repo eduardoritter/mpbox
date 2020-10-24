@@ -61,13 +61,15 @@ def six_months_from_now():
 
 
 def week_dates(year, week):
-    print(datetime.fromisocalendar(year, week, 1))
-    print(datetime.fromisocalendar(year, week, 5))
+    monday = datetime.fromisocalendar(year, week, 1)
+    friday = datetime.fromisocalendar(year, week, 5)
+    return [monday, friday]
 
 
-def week_of_the_year():
-    print(datetime.date(now()).isocalendar())
+def current_week():
+    return now().isocalendar()[1]
 
 
 if __name__ == "__main__":
-    week_dates(2020, 42)
+    print(week_dates(2020, 10))
+    print(current_week())
