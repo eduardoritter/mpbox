@@ -19,6 +19,12 @@ def home():
 def search():
     name = request.args.get('name')    
     patient_list = patients.filter(Patient.name.like('%' + str(name) + '%')).all()
+
+    if not patient_list:
+        flash('Paciente %s não encontrado!' % name)
+    else:
+        patient_list.sort(key=lambda k: k.name)
+
     return render_template('home.html', patients=patient_list)
 
 

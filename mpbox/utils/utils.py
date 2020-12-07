@@ -49,6 +49,8 @@ def classify_plans(plans):
         else:
             old_plans.append(p)
 
+    old_plans.sort(reverse=True, key=lambda k: k.expiry_date)
+
     return active_plans, old_plans
 
 

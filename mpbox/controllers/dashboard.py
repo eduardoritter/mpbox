@@ -16,22 +16,22 @@ def dashboard():
     return render_template('dashboard.html', last_plans=plans.last())
 
 
-@bp.route('/week_visits')
+@bp.route('/week_visits/<week_year>')
 @login_required
-def week_visits():
-    week = request.args.get('week')
-    year = request.args.get('year')
+def week_visits(week_year):
+    week = int(week_year[:2])
+    year = int(week_year[2:])
 
     print(week)
     print(year)
 
     for day in week_dates(week=week, year=year):
         print(day)
-        # try:
-        #     visit_list = visits.filter(Visit.date == day)
-        #     print(visit_list)
-        # except Exception as error:
-        #     flash(error)
+        try:
+            visit_list = visits.filter(Visit.date == day)
+            print(str(visit_list))
+        except Exception as error:
+            flash(error)
 
     return render_template('dashboard.html')
 
@@ -39,11 +39,15 @@ def week_visits():
 @bp.route('/search')
 @login_required
 def search():
+    visit_list = None
     try:
         visit_date = datetime.strptime(request.args.get('visit_date'), '%d/%m/%Y')
         visit_list = visits.filter(Visit.date == visit_date.date())
     except Exception as error:
         flash(error)
+
+    if not list(visit_list):
+        flash('Consulta %s não encontrada!' % visit_date)
     
     return render_template('dashboard.html', visits=visit_list)
 
