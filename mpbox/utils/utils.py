@@ -37,6 +37,7 @@ def has_active_plan(plans):
     
     return False
 
+
 def classify_plans(plans):
 
     active_plans = []
@@ -48,10 +49,28 @@ def classify_plans(plans):
         else:
             old_plans.append(p)
 
+    old_plans.sort(reverse=True, key=lambda k: k.expiry_date)
+
     return active_plans, old_plans
+
 
 def now():
     return datetime.now(tz=pytz.timezone('America/Sao_Paulo'))
 
+
 def six_months_from_now():
     return now().date() + relativedelta(months=6)
+
+
+def week_dates(week=None, year=None):
+
+    if not week or not year:
+        week_year = current_week()
+        year = week_year[0]
+        week = week_year[1]
+
+    return [datetime.fromisocalendar(year, week, i).date() for i in range(1, 6)]
+
+
+def current_week():
+    return now().isocalendar()
